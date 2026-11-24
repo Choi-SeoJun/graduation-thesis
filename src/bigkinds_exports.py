@@ -59,12 +59,9 @@ def ingest(conn, path, lo, hi, expected, recorded_digest):
         conn.execute("insert into exports values (?,?,?,?)", (lo, hi, digest, count))
 
 
-def verify_earnings(db):
+def verify_earnings(db, calendar):
     original = json.loads((ROOT / "research/earnings.json").read_text(encoding="utf-8"))
     ledger = {(r["symbol"], r["fiscal_quarter"]): r for r in original}
-    with (MARKET / "raw/KOSPI.csv").open(encoding="utf-8-sig", newline="") as f:
-        calendar = [date.fromisoformat(r["date"]) for r in csv.DictReader(f)
-                    if r["date"] <= "2024-12-31"]
     seen = set()
     with (ROOT / "research/bigkinds_earnings.psv").open(encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f, delimiter="|"):
@@ -88,6 +85,38 @@ def verify_earnings(db):
     if seen != set(ledger) or len(seen) != 60:
         raise ValueError("Incomplete quarterly ledger")
     print("Matched quarterly decisions:", len(seen))
+
+
+def verify_contract_report(db, calendar, aid, outlet, published, modified, sent, close):
+    member = db.execute("select outlet from articles where id=?", (aid,)).fetchone()
+    feed_clock = datetime.strptime(aid[9:23], "%Y%m%d%H%M%S").replace(tzinfo=KST)
+    available = max(datetime.fromisoformat(s) for s in (published, modified, sent) if s)
+    if (member != (outlet,) or outlet == "이투데이" or datetime.fromisoformat(sent) != feed_clock
+            or str(signal_day(available.isoformat(), calendar)) != close[:10]):
+        raise ValueError(f"Contract source or closing date mismatch: {aid}")
+
+
+def verify_contracts(db, calendar):
+    with (ROOT / "research/bigkinds_hynix.psv").open(encoding="utf-8", newline="") as f:
+        hynix = [r for r in csv.DictReader(f, delimiter="|") if r["status"] == "confirmed"]
+    for row in hynix:
+        verify_contract_report(db, calendar, row["bigkinds_id"], row["publisher"],
+                               row["publisher_published_kst"], row["publisher_modified_kst"],
+                               row["index_received_kst"], row["bigkinds_comparison_close"])
+        if row["etoday_close"] and str(signal_day(row["etoday_known_kst"], calendar)) != row["etoday_close"]:
+            raise ValueError(f"EToday closing date mismatch: {row['event_key']}")
+    with (ROOT / "research/bigkinds_naver.json").open(encoding="utf-8") as f:
+        naver = json.load(f)["events"]
+    for row in naver:
+        verify_contract_report(db, calendar, row["bigkinds_id"], row["publisher"], row["published_at"],
+                               row["modified_at"], row["sent_at"], row["bigkinds_signal_close_at"])
+        if row["etoday_signal_close_at"]:
+            etoday_close = signal_day(row["etoday_available_at"], calendar)
+            other_close = date.fromisoformat(row["bigkinds_signal_close_at"][:10])
+            if (str(etoday_close) != row["etoday_signal_close_at"][:10]
+                    or calendar.index(etoday_close) - calendar.index(other_close) != row["bigkinds_lead_sessions"]):
+                raise ValueError(f"Contract timing mismatch: {row['event_id']}")
+    print("Verified contract source clocks for SK hynix and NAVER:", len(hynix), len(naver))
 
 
 def main():
@@ -116,7 +145,11 @@ def main():
             raise ValueError("Incomplete five-year collection")
         db.execute("create index if not exists by_day on articles(day)")
         print("Indexed unique article IDs:", total)
-        verify_earnings(db)
+        with (MARKET / "raw/KOSPI.csv").open(encoding="utf-8-sig", newline="") as f:
+            calendar = [date.fromisoformat(r["date"]) for r in csv.DictReader(f)
+                        if r["date"] <= "2024-12-31"]
+        verify_earnings(db, calendar)
+        verify_contracts(db, calendar)
 
 
 if __name__ == "__main__":
