@@ -1,0 +1,1164 @@
+{
+  "symbol": "035420",
+  "company": "NAVER",
+  "scope": "2020~2024년 빅카인즈 회원 검색 결과에서 네이버 주식회사의 구매·공급 계약, 최종 사업자 선정, 해지 통보를 찾아 이투데이와 대조했다. 모든 시각은 한국시간이다.",
+  "timing": "available_at은 확인한 매체 원문 발행·수정 시각과 빅카인즈 전송 시각의 최댓값이다. 전송 시각은 기사 식별자 뒤 17자리 중 앞 14자리다. earliest_matching_export_id는 더 이른 관련 보도도 포함하며, 그 본문이나 당시 버전에서 사건을 확인하지 못한 경우 시각 차이 계산에 쓰지 않는다. announcement_date는 당시 당사자 또는 발표를 인용한 보도에서 검증한 발표 날짜다. 빅카인즈 검색 범위의 하한이며, 언론사 전체의 최초 게시 여부를 보증하지 않는다.",
+  "searches": [
+    {
+      "id": "naver_enlighten",
+      "query": "네이버 AND 엔라이튼",
+      "from": "2020-01-01",
+      "to": "2024-12-31",
+      "file_sha256": "4b3fd22424c66158b50aa280e6e35c341c60b792f0ea142a8a7b237c9d986a11",
+      "rows": 59,
+      "unique_article_ids": 59,
+      "publishers": 22,
+      "review": "59행의 제목과 배포된 본문 앞부분을 확인했다. 2022-12-01 15행, 2023-10-25 12행과 26일 후속 1행은 두 계약 발표일 및 후속 보도의 검색 결과다. 2022-12-15 및 18일 15행은 한국수자원공사와의 협력 발표다. 별도 공급·구매계약은 2023-10-25 회사 발표에서 확인했다. 이외 16행은 제3자 사업·상품, 정책, 기존 사례와 후속 현황이다."
+    },
+    {
+      "id": "broad",
+      "query": "(삼성전자 OR SK하이닉스 OR 하이닉스 OR 네이버 OR NAVER) AND (계약 OR 수주 OR 발주 OR 납품 OR 공급 OR 낙찰 OR 해지 OR 해약 OR 위탁생산 OR 중계권 OR PPA OR 영업이익 OR 영업손실 OR 잠정실적)",
+      "from": "2020-01-01",
+      "to": "2024-12-31",
+      "rows": 180526,
+      "explicit_naver_in_title_or_excerpt": 13861,
+      "files": [
+        {
+          "filename": "NewsResult_20200101-20200630.xlsx",
+          "sha256": "52465a64b4468dfbfa0f3c492479e0a3b24b0468b89a72ee0331ae8728f7e0e1",
+          "rows": 15984,
+          "explicit_naver_in_title_or_excerpt": 1187
+        },
+        {
+          "filename": "NewsResult_20200701-20201231.xlsx",
+          "sha256": "432a564daf59fc2591b2f9a1303c30ade0d82b1389c6d221f2f7cb8e53fe3a09",
+          "rows": 16880,
+          "explicit_naver_in_title_or_excerpt": 1828
+        },
+        {
+          "filename": "NewsResult_20210101-20210331.xlsx",
+          "sha256": "dd28a4ba6999971a147657c71612b3604994d189180a846b847bdaf16740c427",
+          "rows": 9570,
+          "explicit_naver_in_title_or_excerpt": 960
+        },
+        {
+          "filename": "NewsResult_20210401-20210630.xlsx",
+          "sha256": "569faa36f8248d0f2ecd5dc7e27820d110294bd4f049db2bedcce961e6b06fa1",
+          "rows": 10969,
+          "explicit_naver_in_title_or_excerpt": 985
+        },
+        {
+          "filename": "NewsResult_20210701-20211231.xlsx",
+          "sha256": "c89fad3a86311d99fee09d36e08823be30362957fdbd89ff166caad56dacbc78",
+          "rows": 18262,
+          "explicit_naver_in_title_or_excerpt": 1484
+        },
+        {
+          "filename": "NewsResult_20220101-20220630.xlsx",
+          "sha256": "fa98b70ee36261213270b7703a3a23133964a7d984cfed919a0ada93232da5b9",
+          "rows": 16791,
+          "explicit_naver_in_title_or_excerpt": 1026
+        },
+        {
+          "filename": "NewsResult_20220701-20221231.xlsx",
+          "sha256": "55c8e690c815cbf672a98c9b9b4896d4a2ba5152c75fe485f23247ac409376b3",
+          "rows": 17437,
+          "explicit_naver_in_title_or_excerpt": 1503
+        },
+        {
+          "filename": "NewsResult_20230101-20230630.xlsx",
+          "sha256": "7198f8e3b4c228f42fc4d0df65d6fc1b2e07979638e5e05a046c42776a616faa",
+          "rows": 18556,
+          "explicit_naver_in_title_or_excerpt": 1247
+        },
+        {
+          "filename": "NewsResult_20230701-20231231.xlsx",
+          "sha256": "6b55b2d965419afb9b78422c8104edc15bd5f473767e4aa7d450d041b25961a1",
+          "rows": 16392,
+          "explicit_naver_in_title_or_excerpt": 1280
+        },
+        {
+          "filename": "NewsResult_20240101-20240630.xlsx",
+          "sha256": "8a41adefa36abda6c1b89b0d0cdcae5a82796382c44a7b84e731318890740810",
+          "rows": 19274,
+          "explicit_naver_in_title_or_excerpt": 1181
+        },
+        {
+          "filename": "NewsResult_20240701-20240930.xlsx",
+          "sha256": "ff1a7fe0bcbfff690a73c0f3e2c1e8839d6a826c3d0e09d3358a77193db6b757",
+          "rows": 9965,
+          "explicit_naver_in_title_or_excerpt": 601
+        },
+        {
+          "filename": "NewsResult_20241001-20241231.xlsx",
+          "sha256": "f6fe281d2c3110df49b2b8ea6ae0e107a983beeecdb31d9836f76ce3f4c439fc",
+          "rows": 10446,
+          "explicit_naver_in_title_or_excerpt": 579
+        }
+      ],
+      "review": "12개 파일의 전 행에서 제목 및 본문 앞부분의 명시적 네이버·NAVER 표기를 추출했다. 계약 당사자·거래 동사·중계권·뉴스 제휴·거래 상대·기존 이투데이 사건의 표현을 이용해 후보군을 좁히고 검색 결과를 대조했다. 중요 후보는 언론사 원문 및 회사·상대방 자료로 판정했다. 본문 열은 최대 200자이며 제목·발췌에 기업명이 없는 기사와 검색어 밖의 사건을 망라하지 않는다."
+    }
+  ],
+  "events": [
+    {
+      "kind": "award",
+      "event_id": "BK035420-20200121-JOONGANG",
+      "report_id": "BK035420-20200121-JOONGANG",
+      "role": "buyer",
+      "event": "코리아중앙데일리 뉴스콘텐츠 공급사 선정",
+      "announcement_date": "2020-01-21",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "04100078.20200121150359001",
+      "publisher": "뉴스핌",
+      "publisher_url": "https://www.newspim.com/news/view/20200121000750",
+      "published_at": "2020-01-21T14:58:00+09:00",
+      "modified_at": "2020-01-21T14:59:01+09:00",
+      "sent_at": "2020-01-21T15:03:59+09:00",
+      "available_at": "2020-01-21T15:03:59+09:00",
+      "earliest_matching_export_id": "04100078.20200121150359001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://www.joonganggroup.com/newsroom/article/view?pno=1290",
+      "note": "신규 1곳을 실명으로 특정한 보도. 공동심사에서 검색·스탠드로 선정된 다른 매체는 별도 구매계약으로 세지 않았다.",
+      "bigkinds_signal_close_at": "2020-01-21T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "E1863958",
+      "report_id": "E1863958",
+      "role": "seller",
+      "event": "BGF리테일 CU 간편주문 플랫폼 통합관리서비스",
+      "announcement_date": "2020-03-02",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100801.20200302074919001",
+      "publisher": "아시아경제",
+      "publisher_url": "https://view.asiae.co.kr/article/2020030207490271680",
+      "published_at": "2020-03-02T07:49:06+09:00",
+      "modified_at": "2020-03-02T07:49:06+09:00",
+      "sent_at": "2020-03-02T07:49:19+09:00",
+      "available_at": "2020-03-02T07:49:19+09:00",
+      "earliest_matching_export_id": "01101101.20200302050336002",
+      "etoday_id": "1863958",
+      "etoday_url": "https://www.etoday.co.kr/news/view/1863958",
+      "etoday_available_at": "2020-03-02T08:48:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.etoday.co.kr/news/view/1863958",
+      "note": "한국일보의 가장 이른 전송(05:03:36)은 파일의 원매체 URL이 비어 있어 원문 시각 검증이 가능한 아시아경제로 비교했다.",
+      "bigkinds_signal_close_at": "2020-03-02T15:30:00+09:00",
+      "etoday_signal_close_at": "2020-03-02T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "E1892387",
+      "report_id": "E1892387",
+      "role": "buyer",
+      "event": "2020 시즌 K리그 온라인 전 경기 중계권",
+      "announcement_date": "2020-05-05",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01400501.20200505170532001",
+      "publisher": "중부일보",
+      "publisher_url": "https://www.joongboo.com/news/articleView.html?idxno=363418177",
+      "published_at": "2020-05-05T17:02:00+09:00",
+      "modified_at": null,
+      "sent_at": "2020-05-05T17:05:32+09:00",
+      "available_at": "2020-05-05T17:05:32+09:00",
+      "earliest_matching_export_id": "10100101.20200505165724001",
+      "etoday_id": "1892387",
+      "etoday_url": "https://www.etoday.co.kr/news/view/1892387",
+      "etoday_available_at": "2020-05-08T19:06:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.kleague.com/news_view.do?seq=8356",
+      "note": "어린이날인 5/5 연맹이 네이버 등 확정 플랫폼과 협상 중인 다른 플랫폼을 구별해 발표했다. 5/8은 네이버 후속 발표. 스포츠서울의 첫 전송은 16:57:24이나 원매체 URL 공란으로 같은 날 중부일보를 원문 대조쌍으로 선정했다. 종가 5/6과 5/11 사이 3거래일.",
+      "bigkinds_signal_close_at": "2020-05-06T15:30:00+09:00",
+      "etoday_signal_close_at": "2020-05-11T15:30:00+09:00",
+      "bigkinds_lead_sessions": 3,
+      "etoday_earlier_body_audit": {
+        "start": "2020-04-30",
+        "end": "2020-05-08",
+        "query_match_counts": {
+          "K리그": 4,
+          "K리그1": 1,
+          "프로축구": 6,
+          "전북 현대": 3,
+          "수원 삼성": 5,
+          "중계권": 3,
+          "네이버 스포츠": 2
+        },
+        "unique_bodies_examined": 17,
+        "dual_keyword_candidates": [
+          "1892387"
+        ]
+      }
+    },
+    {
+      "kind": "contract",
+      "event_id": "E1909238",
+      "report_id": "E1909238",
+      "role": "buyer",
+      "event": "리버풀 FC 공식 영상의 한국어 소셜미디어 콘텐츠 공급계약",
+      "announcement_date": "2020-06-22",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "07100501.20200622093636001",
+      "publisher": "전자신문",
+      "publisher_url": "https://m.etnews.com/20200622000025",
+      "published_at": "2020-06-22T09:35:00+09:00",
+      "modified_at": "2020-06-22T09:35:00+09:00",
+      "sent_at": "2020-06-22T09:36:36+09:00",
+      "available_at": "2020-06-22T09:36:36+09:00",
+      "earliest_matching_export_id": "07100501.20200622093636001",
+      "etoday_id": "1909238",
+      "etoday_url": "https://www.etoday.co.kr/news/view/1909238",
+      "etoday_available_at": "2020-06-22T17:57:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.etoday.co.kr/news/view/1909238",
+      "note": "양쪽 모두 6/22 보도. 이투데이 17:57으로 이용 가능한 종가는 6/23. 전자신문은 6/22 종가 전 확인된다.",
+      "bigkinds_signal_close_at": "2020-06-22T15:30:00+09:00",
+      "etoday_signal_close_at": "2020-06-23T15:30:00+09:00",
+      "bigkinds_lead_sessions": 1,
+      "etoday_earlier_body_audit": {
+        "start": "2020-06-15",
+        "end": "2020-06-22",
+        "query_match_counts": {
+          "리버풀": 2,
+          "리버풀FC": 1,
+          "프리미어리그": 6,
+          "중계권": 1,
+          "해외 축구": 1,
+          "네이버 스포츠": 3
+        },
+        "unique_bodies_examined": 9,
+        "dual_keyword_candidates": [
+          "1909238"
+        ]
+      }
+    },
+    {
+      "kind": "contract",
+      "event_id": "E1963295",
+      "report_id": "E1963295",
+      "role": "seller",
+      "event": "국민건강보험공단 고지서 전자문서 전담 송달 5년 계약",
+      "announcement_date": "2020-11-17",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "04101008.20201117091210001",
+      "publisher": "이데일리",
+      "publisher_url": "https://www.edaily.co.kr/news/read?newsId=01895846625966704",
+      "published_at": "2020-11-17T09:11:12+09:00",
+      "modified_at": "2020-11-17T09:11:12+09:00",
+      "sent_at": "2020-11-17T09:12:10+09:00",
+      "available_at": "2020-11-17T09:12:10+09:00",
+      "earliest_matching_export_id": "04101008.20201117091210001",
+      "etoday_id": "1963295",
+      "etoday_url": "https://www.etoday.co.kr/news/view/1963295",
+      "etoday_available_at": "2020-11-17T15:01:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=30276",
+      "note": "이투데이는 09:28 발행 뒤 15:01 수정. 양쪽 모두 11/17 종가 전 확인된다.",
+      "bigkinds_signal_close_at": "2020-11-17T15:30:00+09:00",
+      "etoday_signal_close_at": "2020-11-17T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20210124-KT",
+      "report_id": "BK035420-20210124-KT",
+      "role": "both",
+      "event": "KT 원내비와 네이버지도 내비게이션 경로 데이터 상호 제공계약",
+      "announcement_date": "2021-01-24",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100201.20210124112819001",
+      "publisher": "머니투데이",
+      "publisher_url": "https://www.mt.co.kr/tech/2021/01/24/2021012411195213280",
+      "published_at": "2021-01-24T11:27:15+09:00",
+      "modified_at": "2021-01-24T11:27:15+09:00",
+      "sent_at": "2021-01-24T11:28:19+09:00",
+      "available_at": "2021-01-24T11:28:19+09:00",
+      "earliest_matching_export_id": "07100501.20210124084503001",
+      "etoday_id": "1987692",
+      "etoday_url": "https://www.etoday.co.kr/news/view/1987692",
+      "etoday_available_at": "2021-01-24T09:49:00+09:00",
+      "etoday_status": "reported_outside_existing_positives",
+      "verification_url": "https://www.newspim.com/news/view/20210125000054",
+      "note": "전자신문 첫 전송 08:45:03, 현존 원문 13:22 수정. 아주경제 09:56:33 전송, 13:36:17 수정. 이투데이 외 검증 원문 중 머니투데이가 11:28:19로 먼저다. 네이버 관계자가 뉴스핌에 1/25 계약을 직접 확인. 이투데이 원장은 체결·당사자 불명확으로 제외했다. 양쪽 모두 다음 1/25 종가.",
+      "bigkinds_signal_close_at": "2021-01-25T15:30:00+09:00",
+      "etoday_signal_close_at": "2021-01-25T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20210125-BIZWATCH",
+      "report_id": "BK035420-20210125-BIZWATCH",
+      "role": "buyer",
+      "event": "비즈니스워치 뉴스콘텐츠 공급사 선정",
+      "announcement_date": "2021-01-25",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "07100702.20210125173934001",
+      "publisher": "기자협회보",
+      "publisher_url": "https://www.journalist.or.kr/news/article.html?no=48802",
+      "published_at": "2021-01-25T17:39:24+09:00",
+      "modified_at": null,
+      "sent_at": "2021-01-25T17:39:34+09:00",
+      "available_at": "2021-01-25T17:39:34+09:00",
+      "earliest_matching_export_id": "07100702.20210125173934001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "etoday_report_1988032_supplier_unnamed",
+      "verification_url": "https://www.bizwatch.co.kr/company/history",
+      "note": "1/25 이투데이 1988032는 CP 선정 1개만 보도하고 공급사를 명시하지 않아 명명된 사건 시각으로 사용하지 않았다.",
+      "bigkinds_signal_close_at": "2021-01-26T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "E2044949",
+      "report_id": "E2044949",
+      "role": "buyer",
+      "event": "도쿄 하계 올림픽 온라인 중계권",
+      "announcement_date": "2021-07-15",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100201.20210715112154001",
+      "publisher": "머니투데이",
+      "publisher_url": "https://www.mt.co.kr/tech/2021/07/15/2021071511130831915",
+      "published_at": "2021-07-15T11:20:53+09:00",
+      "modified_at": "2021-07-15T11:20:53+09:00",
+      "sent_at": "2021-07-15T11:21:54+09:00",
+      "available_at": "2021-07-15T11:21:54+09:00",
+      "earliest_matching_export_id": "02100201.20210715112154001",
+      "etoday_id": "2044949",
+      "etoday_url": "https://www.etoday.co.kr/news/view/2044949",
+      "etoday_available_at": "2021-07-15T17:54:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.etoday.co.kr/news/view/2044949",
+      "note": "6월 쿠팡 단독설 및 7/13~14 네이버 협상 보도와 구별. 7/15 네이버의 권리 확보 발표를 인용했다. 이투데이 17:54로 첫 종가는 7/16, 머니투데이는 7/15.",
+      "bigkinds_signal_close_at": "2021-07-15T15:30:00+09:00",
+      "etoday_signal_close_at": "2021-07-16T15:30:00+09:00",
+      "bigkinds_lead_sessions": 1,
+      "etoday_earlier_body_audit": {
+        "start": "2021-07-08",
+        "end": "2021-07-15",
+        "query_match_counts": {
+          "도쿄올림픽": 37,
+          "도쿄 올림픽": 38,
+          "올림픽": 54,
+          "중계권": 1,
+          "네이버 스포츠": 1,
+          "쿠팡플레이": 0
+        },
+        "unique_bodies_examined": 54,
+        "dual_keyword_candidates": [
+          "2044949"
+        ]
+      }
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-1",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "강원도민일보 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-2",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "CJB청주방송 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-3",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "대전일보 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-4",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "대구MBC 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-5",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "국제신문 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-6",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "전주MBC 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-7",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "kbc광주방송 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20211112-REGION-8",
+      "report_id": "BK035420-20211112-REGION",
+      "role": "buyer",
+      "event": "JIBS제주방송 지역뉴스 콘텐츠 공급사 최종 선정",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01200401.20211112172259001",
+      "publisher": "인천일보",
+      "publisher_url": "https://www.incheonilbo.com/news/articleView.html?idxno=1120059",
+      "published_at": "2021-11-12T17:22:00+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:22:59+09:00",
+      "available_at": "2021-11-12T17:22:59+09:00",
+      "earliest_matching_export_id": "01200401.20211112172259001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://kookje.co.kr/news2011/asp/newsbody.asp?code=0200&key=20211112.99099003982",
+      "note": "인천일보 원문에서 8개 공급사를 모두 실명으로 확인했다. 공동 발표 1회에 서로 다른 거래 상대방 8곳이 선정됐다. 각 공급사의 후속 계약 체결 및 서비스 편입은 https://m.journalist.or.kr/m/m_article.html?no=50902 에서 확인했다.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "termination",
+      "event_id": "BK035420-20211112-YONHAP",
+      "report_id": "BK035420-20211112-YONHAP",
+      "role": "buyer",
+      "event": "네이버의 연합뉴스 뉴스콘텐츠 공급계약 해지 통보",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "07100602.20211112184702001",
+      "publisher": "PD-저널",
+      "publisher_url": "https://www.pdjournal.com/news/articleView.html?idxno=73123",
+      "published_at": "2021-11-12T18:45:32+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T18:47:02+09:00",
+      "available_at": "2021-11-12T18:47:02+09:00",
+      "earliest_matching_export_id": "07100702.20211112172039001",
+      "etoday_id": "2077650",
+      "etoday_url": "https://www.etoday.co.kr/news/view/2077650",
+      "etoday_available_at": "2021-11-12T19:43:00+09:00",
+      "etoday_status": "reported_outside_existing_positives",
+      "verification_url": "https://www.yna.co.kr/view/AKR20211224076200004",
+      "note": "17:20:39 기자협회보 재평가 결과 발표. 계약 해지를 명시한 18:45 PD저널로 원문 비교. 이투데이 19:43 본문은 네이버 해지 공지 인용, 제목에는 네이버가 없다. 12/24 법원이 해지 효력 정지. 두 보도 모두 11/15 종가.",
+      "bigkinds_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "etoday_signal_close_at": "2021-11-15T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20220117-BEIJING",
+      "report_id": "BK035420-20220117-BEIJING",
+      "role": "buyer",
+      "event": "2022 베이징 동계올림픽 온라인 중계권",
+      "announcement_date": "2022-01-17",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100311.20220117101445001",
+      "publisher": "서울경제",
+      "publisher_url": "https://www.sedaily.com/NewsView/260WEM812T",
+      "published_at": "2022-01-17T10:09:46+09:00",
+      "modified_at": "2022-01-17T10:10:53+09:00",
+      "sent_at": "2022-01-17T10:14:45+09:00",
+      "available_at": "2022-01-17T10:14:45+09:00",
+      "earliest_matching_export_id": "02100311.20220117101445001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=30677",
+      "note": "네이버가 1/17 경기 생중계 및 VOD를 발표. 2020 도쿄 하계올림픽과 별도 대회다.",
+      "bigkinds_signal_close_at": "2022-01-17T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "award",
+      "event_id": "BK035420-20221014-KYEONGGI",
+      "report_id": "BK035420-20221014-KYEONGGI",
+      "role": "buyer",
+      "event": "경기일보 경인권 뉴스콘텐츠 공급사 선정",
+      "announcement_date": "2022-10-14",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "07100702.20221014172450001",
+      "publisher": "기자협회보",
+      "publisher_url": "https://www.journalist.or.kr/news/article.html?no=52334",
+      "published_at": "2022-10-14T17:23:48+09:00",
+      "modified_at": null,
+      "sent_at": "2022-10-14T17:24:50+09:00",
+      "available_at": "2022-10-14T17:24:50+09:00",
+      "earliest_matching_export_id": "07100702.20221014172450001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://www.kyeonggi.com/article/20221016580169",
+      "note": "2021년 특별심사 당시 합격사가 없던 경기·인천권에서 2022년에 선정된 1개 공급사.",
+      "bigkinds_signal_close_at": "2022-10-17T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "E2190139",
+      "report_id": "E2190139",
+      "role": "buyer",
+      "event": "2022 카타르 월드컵 온라인 중계권",
+      "announcement_date": "2022-11-08",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100851.20221108090732001",
+      "publisher": "아주경제",
+      "publisher_url": "https://www.ajunews.com/view/20221108084705642",
+      "published_at": "2022-11-08T09:06:27+09:00",
+      "modified_at": "2022-11-08T09:06:27+09:00",
+      "sent_at": "2022-11-08T09:07:32+09:00",
+      "available_at": "2022-11-08T09:07:32+09:00",
+      "earliest_matching_export_id": "02100801.20221108081916001",
+      "etoday_id": "2190139",
+      "etoday_url": "https://www.etoday.co.kr/news/view/2190139",
+      "etoday_available_at": "2022-11-08T09:43:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=30943",
+      "note": "11/7 컨퍼런스콜은 확보 계획으로 제외. 아시아경제 11/8 08:19:16 첫 전송은 현존 원문이 11/9 11:02:02 수정되어 11/8 09:07:32 아주경제와 비교했다.",
+      "bigkinds_signal_close_at": "2022-11-08T15:30:00+09:00",
+      "etoday_signal_close_at": "2022-11-08T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "E2198302",
+      "role": "buyer",
+      "event": "제2사옥 전력용 한국전력·엔라이튼 태양광 제3자 PPA",
+      "announcement_date": "2022-12-01",
+      "search_ids": [
+        "naver_enlighten",
+        "broad"
+      ],
+      "bigkinds_id": "02100311.20221201092657001",
+      "publisher": "서울경제",
+      "publisher_url": "https://www.sedaily.com/NewsView/26EQF9B2YA",
+      "published_at": "2022-12-01T09:26:22+09:00",
+      "modified_at": "2022-12-01T09:26:20+09:00",
+      "sent_at": "2022-12-01T09:26:57+09:00",
+      "available_at": "2022-12-01T09:26:57+09:00",
+      "etoday_id": "2198302",
+      "etoday_url": "https://www.etoday.co.kr/news/view/2198302",
+      "etoday_available_at": "2022-12-01T09:55:00+09:00",
+      "official_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=30972",
+      "note": "검색식 결과 중 같은 발표를 확인한 최초 전송. 서울경제 원문 수정 표시는 입력보다 2초 빠르다. 이투데이 원문보다 보수적 이용가능시각이 28분 3초 빠르며 둘 다 12월 1일 종가에 반영 가능하다.",
+      "earliest_matching_export_id": "02100311.20221201092657001",
+      "report_id": "E2198302",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=30972",
+      "bigkinds_signal_close_at": "2022-12-01T15:30:00+09:00",
+      "etoday_signal_close_at": "2022-12-01T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20230417-KLPGA",
+      "report_id": "BK035420-20230417-KLPGA",
+      "role": "buyer",
+      "event": "2023 KLPGA 30개 대회 온라인 중계권",
+      "announcement_date": "2023-04-17",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100801.20230417091034002",
+      "publisher": "아시아경제",
+      "publisher_url": "https://view.asiae.co.kr/article/2023041709101793253",
+      "published_at": "2023-04-17T09:10:17+09:00",
+      "modified_at": "2023-04-17T09:10:17+09:00",
+      "sent_at": "2023-04-17T09:10:34+09:00",
+      "available_at": "2023-04-17T09:10:34+09:00",
+      "earliest_matching_export_id": "02100801.20230417091034002",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=31123",
+      "note": "4/17 네이버가 해당 연도 30개 대회에 대한 중계권 획득을 발표했다.",
+      "bigkinds_signal_close_at": "2023-04-17T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "E2295960",
+      "report_id": "E2295960",
+      "role": "buyer",
+      "event": "한국수자원공사 용담제2수력 연 13GWh 직접전력거래계약",
+      "announcement_date": "2023-10-25",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100201.20231025130037001",
+      "publisher": "머니투데이",
+      "publisher_url": "https://www.mt.co.kr/tech/2023/10/25/2023102511025225401",
+      "published_at": "2023-10-25T13:00:00+09:00",
+      "modified_at": "2023-10-25T13:00:00+09:00",
+      "sent_at": "2023-10-25T13:00:37+09:00",
+      "available_at": "2023-10-25T13:00:37+09:00",
+      "earliest_matching_export_id": "02100201.20231025130037001",
+      "etoday_id": "2295756",
+      "etoday_url": "https://www.etoday.co.kr/news/view/2295756",
+      "etoday_available_at": "2023-10-25T13:40:00+09:00",
+      "etoday_status": "existing_positive",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=2285",
+      "note": "넓은 검색에서 머니투데이 13:00:37 전송이 가장 이르다. 엔라이튼 한정 검색의 이데일리 13:00:55보다 18초 빠르다. 이투데이 원문은 13:40.",
+      "query_specific_evidence": {
+        "bigkinds_id": "04101008.20231025130055001",
+        "publisher": "이데일리",
+        "publisher_url": "https://www.edaily.co.kr/news/read?newsId=02660086635776528",
+        "published_at": "2023-10-25T13:00:00+09:00",
+        "modified_at": "2023-10-25T13:00:00+09:00",
+        "sent_at": "2023-10-25T13:00:55+09:00",
+        "available_at": "2023-10-25T13:00:55+09:00",
+        "search_id": "naver_enlighten"
+      },
+      "bigkinds_signal_close_at": "2023-10-25T15:30:00+09:00",
+      "etoday_signal_close_at": "2023-10-25T15:30:00+09:00",
+      "bigkinds_lead_sessions": 0
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20231113-ALGO",
+      "report_id": "BK035420-20231113-ALGO",
+      "role": "buyer",
+      "event": "알고랩의 네이버 본사·계열사 기업화물 퀵서비스 공급",
+      "announcement_date": "2023-11-13",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100201.20231113130102001",
+      "publisher": "머니투데이",
+      "publisher_url": "https://www.mt.co.kr/future/2023/11/13/2023111310291725571",
+      "published_at": "2023-11-13T13:00:00+09:00",
+      "modified_at": "2023-11-13T13:00:00+09:00",
+      "sent_at": "2023-11-13T13:01:02+09:00",
+      "available_at": "2023-11-13T13:01:02+09:00",
+      "earliest_matching_export_id": "02100201.20231113130102001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://www.mt.co.kr/index.php/future/2023/11/13/2023111310291725571",
+      "note": "머니투데이에 공급사 관계자가 계약을 확인했다. 본사 및 계열사를 포괄하는 경쟁입찰 1회로 집계. 9월 안내된 계열사 경품 배송 재위탁과 구별한다.",
+      "bigkinds_signal_close_at": "2023-11-13T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20231201-POSPACE",
+      "report_id": "BK035420-20231201-POSPACE",
+      "role": "seller",
+      "event": "무인매장 출입인증용 네이버 출입증 서비스 제휴계약",
+      "announcement_date": "2023-12-01",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "02100101.20231201093502001",
+      "publisher": "매일경제",
+      "publisher_url": "https://www.mk.co.kr/news/it/10888021",
+      "published_at": "2023-12-01T09:31:00+09:00",
+      "modified_at": null,
+      "sent_at": "2023-12-01T09:35:02+09:00",
+      "available_at": "2023-12-01T09:35:02+09:00",
+      "earliest_matching_export_id": "02100101.20231201093502001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://www.newswire.co.kr/newsRead.php?no=979876",
+      "note": "계약 당사자 포스페이스랩이 09:00에 직접 배포했다. 포스페이스랩이 도입 고객사를 모집하고 네이버가 출입 인증 서비스를 제공한다. 실제 입점 매장 수는 공시되지 않았다.",
+      "bigkinds_signal_close_at": "2023-12-01T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    },
+    {
+      "kind": "contract",
+      "event_id": "BK035420-20241111-KESPA",
+      "report_id": "BK035420-20241111-KESPA",
+      "role": "buyer",
+      "event": "2024 LoL 케스파컵 전 경기 한국어 단독 중계권",
+      "announcement_date": "2024-11-11",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "01100401.20241125154440001",
+      "publisher": "동아일보",
+      "publisher_url": "https://www.donga.com/news/Economy/article/all/20241125/130494860/1",
+      "published_at": "2024-11-25T15:02:00+09:00",
+      "modified_at": "2024-11-25T15:43:54+09:00",
+      "sent_at": "2024-11-25T15:44:40+09:00",
+      "available_at": "2024-11-25T15:44:40+09:00",
+      "earliest_matching_export_id": "01100401.20241125154440001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://chzzk.naver.com/event/lolkespacup2024",
+      "note": "케스파컵 주최 측이 11/11 발표했으며 연합뉴스가 당일 17:23에 보도했다. 확인한 광역 XLSX에는 이 보도가 없다. 11/25 동아일보의 이번 대회 단독 중계권 확보 문장을 별도 확인했다. 같은 기사의 7월 e스포츠월드컵 권리는 SOOP 소유로 별개다.",
+      "earlier_public_report_at": "2024-11-11T17:23:00+09:00",
+      "earlier_public_report_url": "https://www.yna.co.kr/amp/view/AKR20241111134000017",
+      "bigkinds_signal_close_at": "2024-11-26T15:30:00+09:00",
+      "etoday_signal_close_at": null,
+      "bigkinds_lead_sessions": null
+    }
+  ],
+  "unresolved": [
+    {
+      "kind": "termination_notice_date_unverified",
+      "event_id": "BK035420-20211112-SPORTSSEOUL",
+      "report_id": "BK035420-20211112-SPORTSSEOUL",
+      "role": "buyer",
+      "event": "스포츠서울의 네이버 뉴스콘텐츠 공급사 지위 변경과 계약 해지",
+      "announcement_date": "2021-11-12",
+      "search_ids": [
+        "broad"
+      ],
+      "bigkinds_id": "07100702.20211112172039001",
+      "publisher": "기자협회보",
+      "publisher_url": "https://www.journalist.or.kr/news/article.html?no=50454",
+      "published_at": "2021-11-12T17:15:38+09:00",
+      "modified_at": null,
+      "sent_at": "2021-11-12T17:20:39+09:00",
+      "available_at": "2021-11-12T17:20:39+09:00",
+      "earliest_matching_export_id": "07100702.20211112172039001",
+      "etoday_id": null,
+      "etoday_url": null,
+      "etoday_available_at": null,
+      "etoday_status": "no_matching_report_verified",
+      "verification_url": "https://journalist.or.kr/ezview/article_main.html?no=51470",
+      "note": "동시점 기사는 제평위가 두 매체를 뉴스콘텐츠 등급에서 제외한 결과를 보도했다. 스포츠서울에 대한 네이버의 개별 해지 통보의 정확한 일시는 이 기사로 특정할 수 없어 계약 해지 비교의 일별 신호에서 제외한다. 후속 법원 가처분 보도는 해지 자체만 확인. 통지일 미확정으로 확인 건수와 시차에서 제외했다."
+    },
+    {
+      "event": "KT 공기질 데이터 공급",
+      "etoday_id": "1962760",
+      "bigkinds_id": "04100958.20201116090832001",
+      "verification_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=30275",
+      "note": "11/16 공급계약이라는 보도와 네이버 공식 설명이 충돌한다. 공식 발표는 11/12 체결한 업무협약(MOU)으로 분류한다. 이투데이 기존 양성은 그대로 별도 기록하고 검증된 양측 계약 비교에서는 유보했다."
+    },
+    {
+      "event": "사우디아라비아 5개 도시 디지털 트윈",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=2288",
+      "note": "수주 확정. 기업 공식 발표에서 팀네이버를 계약사업자로 총칭하고 모회사는 정부 소통·기회 발굴, 네이버랩스는 기술, 네이버클라우드는 클라우드·사업 지원을 담당한다. 상장 모회사에 계약상 납품 의무가 부과된 사실을 분리 확인하지 못했다."
+    },
+    {
+      "event": "세종 데이터센터 설계팀 정림건축·HDR·원오원아키텍스 최종 선정",
+      "etoday_id": "1853817",
+      "verification_url": "https://www.etoday.co.kr/news/view/1853817",
+      "note": "이투데이의 기존 양성(2/6 16:58). 광역 검색 결과에서 2/3~10 날짜의 전체 제목·발췌·키워드를 정림/원오원/건축설계/세종 데이터로 재검색했으나 후보 0건이었다. 이투데이 전체 사이트맵에는 2/6 기사 확인. 당일 빅카인즈 전송 시각 유보."
+    },
+    {
+      "event": "네이버 구내식당 현대그린푸드 급식 수주",
+      "bigkinds_id": "02100311.20231031141900001",
+      "note": "10/31 협력사의 최근 1년 수주 회고에서 확인했다. 네이버 구내식당의 선정·체결일/최초 관측일 유보."
+    },
+    {
+      "event": "LG유플러스 바이브 음원 서비스 제휴",
+      "etoday_id": "2213745",
+      "bigkinds_id": "04101008.20230118093932002",
+      "note": "제휴 및 상품의 음원 서비스 전환은 확인했다. 유상 음원 구매·공급 계약 성격 미확인."
+    },
+    {
+      "event": "코인니스 시세·뉴스 공급",
+      "note": "정치 보도에서 이전 계약을 언급하나 공급사 발표 또는 당시 체결일 미확인."
+    }
+  ],
+  "key_exclusions": [
+    {
+      "event": "국영지앤엠 네이버 분당 신사옥 건축/유리",
+      "ids": [
+        "02100801.20200122160110001",
+        "02100701.20200420161205001"
+      ],
+      "reason": "1월 건축 공사의 계약 상대방은 삼성물산, 4월 유리 공급의 상대방은 한국유리공업이다."
+    },
+    {
+      "event": "한컴 웹오피스 공급 협력",
+      "verification_url": "https://navercorp.com/media/pressReleasesDetail?seq=30124",
+      "reason": "회사 발표는 업무협약을 명시한다."
+    },
+    {
+      "event": "현대카드 네이버 PLCC",
+      "reason": "카드 출시 및 공동 마케팅 제휴. 모회사가 상대방에게 물품·서비스를 납품하거나 구매할 의무 미확인."
+    },
+    {
+      "event": "라인야후의 위탁 종료",
+      "verification_url": "https://www.lycorp.co.jp/ja/news/2024/20240701_appendix2_ja.pdf",
+      "reason": "여러 그룹사에 위탁된 업무 및 향후 종료 계획의 집계. 본사 명의 개별 해지 미확인."
+    },
+    {
+      "event": "김대보 원광대 교수 프리미엄콘텐츠",
+      "bigkinds_id": "01600901.20220824163935005",
+      "reason": "플랫폼에서 독자에게 콘텐츠를 판매하는 형태로 네이버 직접 구매 미확인."
+    }
+  ],
+  "comparison_method": {
+    "unit": "서로 다른 거래 상대방·대회·공급목적마다 event_id 1개, 같은 발표의 중복 전송과 동일계약 후속 보도를 합쳤다. report_id 공동 발표 안에 여러 거래 상대가 들어갈 수 있다.",
+    "etoday": "이투데이 동결 본문 원장과, 빅카인즈 회원 광역 파일의 이투데이 기사, 검색일 부근 이투데이 전체 일자별 사이트맵을 거래 상대·사업명과 함께 대조했다. 이투데이 null은 확인한 범위에서 같은 계약 기사 미발견을 뜻한다. 매체 전체의 영구 누락을 의미하지 않는다.",
+    "disclosure": "기사 제목이 공시·공시모음·장 마감 후 주요공시 형식이어도 후보로 유지했다. 원 발주자·공시 계약 상대방이 다르면 제외했다. DART 전 종목 원문을 계약별 완전 검색한 전수집계는 아니다.",
+    "regional": "2021-11-12 지역 특별심사의 8개 언론사를 서로 다른 구매 상대 8건으로 저장했다. 공동 발표 1건이다. 2022-10-14 경기일보는 경인 재심사에서 추가 선정됐으며 별도의 발표다.",
+    "close": "data/local/market/raw/KOSPI.csv 거래일과 src.news_events.signal_day에 따라 한국시간 최초 이용 가능 종가를 계산했다. 기사 26행에 XLSX의 bigkinds_id 및 bigkinds_signal_close_at을 붙였다. 같은 사건이 확인된 이투데이 원문은 etoday_signal_close_at과 종가 간 거래일 수를 기록했다.",
+    "etoday_earlier_body_audit": "이투데이 자체 기간 상세검색(https://www.etoday.co.kr/search/main, fldTermType=5)에 원장 기재 단어를 각각 입력했다. 각 결과의 모든 페이지에서 중복을 없애고 기사 원문 articleBody를 읽었다. dual_keyword_candidates에는 네이버/NAVER와 사건 관련 표현이 함께 있는 기사 ID를 기재했다. 이 세 사건에서 기존 이투데이 기사 이전 확정 보도는 확인하지 못했다.",
+    "etoday_counterparty_search": "추가 9개 발표는 발표일 앞뒤 각 5일 이투데이 자체 기간 검색을 수행했다. 중복을 제거한 기사 원문을 확인하고 해당 거래 상대와 체결·선정 사실을 대조했다. 경기일보는 모든 검색어에서 0건이었다.",
+    "sample_limit": "이 자료는 주어진 검색식과 추출·선별 규칙 안에서 확인한 사건 표본이다. 검색식 밖의 뉴스제휴, 하도급의 원수급사, 명칭 없는 본문 등으로 인해 표본 수는 네이버 전체 계약 수의 하한이다."
+  },
+  "summary": {
+    "confirmed_event_ids": 26,
+    "distinct_release_groups": 19,
+    "existing_etoday_positive_paired": 8,
+    "etoday_report_outside_existing_positives": 2,
+    "etoday_unnamed_counterparty": 1,
+    "etoday_not_verified": 15,
+    "by_event_announcement_year": {
+      "2020": 5,
+      "2021": 12,
+      "2022": 4,
+      "2023": 4,
+      "2024": 1
+    },
+    "paired_named_reports": 10,
+    "paired_bigkinds_earlier_close": 3,
+    "paired_same_close": 7,
+    "paired_etoday_earlier_close": 0
+  },
+  "etoday_counterparty_search": {
+    "joongang": {
+      "event_ids": [
+        "BK035420-20200121-JOONGANG"
+      ],
+      "start": "2020-01-16",
+      "end": "2020-01-26",
+      "query_match_counts": {
+        "코리아중앙데일리": 0,
+        "뉴스제휴평가위원회": 0,
+        "콘텐츠제휴": 1,
+        "콘텐츠 제휴": 4
+      },
+      "unique_bodies_examined": 4,
+      "dual_keyword_candidates": []
+    },
+    "bizwatch": {
+      "event_ids": [
+        "BK035420-20210125-BIZWATCH"
+      ],
+      "start": "2021-01-20",
+      "end": "2021-01-30",
+      "query_match_counts": {
+        "비즈니스워치": 0,
+        "뉴스제휴평가위원회": 1,
+        "콘텐츠제휴": 0
+      },
+      "unique_bodies_examined": 1,
+      "dual_keyword_candidates": [],
+      "note": "관련 기사 1988032는 당일 1개 업체 선정을 보도했으나 선정 업체 이름을 밝히지 않았다."
+    },
+    "region": {
+      "event_ids": [
+        "BK035420-20211112-REGION-1",
+        "BK035420-20211112-REGION-2",
+        "BK035420-20211112-REGION-3",
+        "BK035420-20211112-REGION-4",
+        "BK035420-20211112-REGION-5",
+        "BK035420-20211112-REGION-6",
+        "BK035420-20211112-REGION-7",
+        "BK035420-20211112-REGION-8"
+      ],
+      "start": "2021-11-07",
+      "end": "2021-11-17",
+      "query_match_counts": {
+        "특별심사": 0,
+        "특별 심사": 19,
+        "뉴스제휴평가위원회": 2,
+        "지역언론": 1,
+        "지역 언론": 11,
+        "콘텐츠제휴": 2
+      },
+      "unique_bodies_examined": 32,
+      "dual_keyword_candidates": [
+        "2077650",
+        "2077658"
+      ],
+      "note": "연합뉴스 해지 후속 두 기사. 8개 합격 지역사를 특정하는 문장은 없다."
+    },
+    "beijing": {
+      "event_ids": [
+        "BK035420-20220117-BEIJING"
+      ],
+      "start": "2022-01-12",
+      "end": "2022-01-22",
+      "query_match_counts": {
+        "베이징 동계올림픽": 26,
+        "베이징 올림픽": 28,
+        "중계권": 0,
+        "네이버 스포츠": 0
+      },
+      "unique_bodies_examined": 28,
+      "dual_keyword_candidates": []
+    },
+    "kyeonggi": {
+      "event_ids": [
+        "BK035420-20221014-KYEONGGI"
+      ],
+      "start": "2022-10-09",
+      "end": "2022-10-19",
+      "query_match_counts": {
+        "경기일보": 0,
+        "뉴스제휴평가위원회": 0,
+        "경인권": 0,
+        "콘텐츠제휴": 0
+      },
+      "unique_bodies_examined": 0,
+      "dual_keyword_candidates": []
+    },
+    "klpga": {
+      "event_ids": [
+        "BK035420-20230417-KLPGA"
+      ],
+      "start": "2023-04-12",
+      "end": "2023-04-22",
+      "query_match_counts": {
+        "KLPGA": 3,
+        "여자프로골프": 4,
+        "중계권": 0,
+        "네이버 스포츠": 0
+      },
+      "unique_bodies_examined": 4,
+      "dual_keyword_candidates": []
+    },
+    "algo": {
+      "event_ids": [
+        "BK035420-20231113-ALGO"
+      ],
+      "start": "2023-11-08",
+      "end": "2023-11-18",
+      "query_match_counts": {
+        "알고퀵": 0,
+        "알고랩": 0,
+        "퀵서비스": 1
+      },
+      "unique_bodies_examined": 1,
+      "dual_keyword_candidates": []
+    },
+    "pospace": {
+      "event_ids": [
+        "BK035420-20231201-POSPACE"
+      ],
+      "start": "2023-11-26",
+      "end": "2023-12-06",
+      "query_match_counts": {
+        "포스페이스랩": 0,
+        "네이버 출입증": 1,
+        "무인매장": 1
+      },
+      "unique_bodies_examined": 2,
+      "dual_keyword_candidates": [
+        "2305828"
+      ],
+      "note": "2305828은 서비스 시연 기사이며 포스페이스랩 명시 및 계약 체결 내용이 없다."
+    },
+    "kespa": {
+      "event_ids": [
+        "BK035420-20241111-KESPA"
+      ],
+      "start": "2024-11-06",
+      "end": "2024-11-16",
+      "query_match_counts": {
+        "케스파컵": 0,
+        "케스파 컵": 0,
+        "치지직": 0,
+        "중계권": 1
+      },
+      "unique_bodies_examined": 1,
+      "dual_keyword_candidates": []
+    }
+  }
+}
