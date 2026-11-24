@@ -1,0 +1,10 @@
+# 공개 권한을 확인한 집계표와 그림은 별도로 관리한다.
+data/raw/
+data/private/
+.env
+.env.*
+!.env.example
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+~$*
