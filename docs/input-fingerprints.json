@@ -1,10 +1,13 @@
 {
-  "data/local/prepared/005930.csv": "1c7112374356a8a10fec0e1403c6ecbd0fdb7940043e4a81ef42c6a11bd7c1f6",
-  "data/local/prepared/000660.csv": "6432aeeb357a36c9d683d9839a8291575b6da539b24f474b291f5c4a02edfb04",
-  "data/local/prepared/035420.csv": "f6a8a8448a2cc2231d9dc134c4a8726b76d9a68d331e951bd1ee4e71a8de32a7",
+  "data/local/prepared/005930.csv": "9a23a4e42dfa00838874191946364ba53a647e0a91dc708a1c2dc16ad1ec4ea0",
+  "data/local/prepared/000660.csv": "294f2d897fc8ec630978f456fbe7f0a1d792653f66682778e8ee8bc25dc7ee97",
+  "data/local/prepared/035420.csv": "258a39a993cd7af403becfd8e59a4748d6359bafe02cd87d7a42e35d0aa8f997",
   "data/local/prepared/folds.csv": "d0f3c1a1d5db8b91694f66d45061d2395d5880a3e98010788739532712e2d195",
   "data/local/market/raw/KOSPI.csv": "e14ae0a05a21316d90b516e06618946c3bba758940d4d91bfe4f05ba7b6c3ce7",
-  "data/local/news/etoday/development/news_daily.csv": "d45be5e162c0a616673aedc3c54591de0524d4215bcbfb67b545424c3dea2c90",
+  "research/etoday_daily_context.csv": "b4d304b4061db802c0bcb02f9b7b4191e355eebb38e892599fa33f061c835531",
+  "research/contract_source_daily.csv": "5f8dda51e70c164f8e31861121ef7e0496980d9567a90b2ee20b9200e0be74ed",
+  "research/contract_source_events.psv": "c13ceccf3b1e219310f69e3127da60c96dfcebd9bf42e89ac464b45940bade26",
+  "research/market_action_audit.json": "7ec83d892923f143ae4534a71d9a323d88b72f3bb22a37982b4c6e27c71dc877",
   "research/dividends.psv": "dff87fff0db1a866ad2e60b9082220b249b9c3cbe579a7466140da7bbf989cdc",
   "research/etoday_events.json": "d366889089ee6206d48b061cdc50bb9bfb8c936977afce482d7a9071ef969be4",
   "research/earnings.json": "9cd16139d084bfcd39aabde8ca8a0c5cbf5056e0e9abba8fdc9b04d14ee3487a",
@@ -13,5 +16,8 @@
   "research/contract_audit.json": "2db613f0270e4776df6f86ed99fa003b29d085fa5de1c598375ad8bc710424d3",
   "data/local/market/exchange/005930.csv": "53d75c70d44efc4ebf836c94c29799fd36aa17a07545ca388bd311de170a1fcb",
   "data/local/market/exchange/000660.csv": "9255500dbdb538ead8f5671b73d468f0dd99f5ae6231e393c9bfeb47a4e282c6",
-  "data/local/market/exchange/035420.csv": "8b872c3a8434b215af624bbead436cb54365ce95c14625cce6104295dfaefe36"
+  "data/local/market/exchange/035420.csv": "8b872c3a8434b215af624bbead436cb54365ce95c14625cce6104295dfaefe36",
+  "data/local/market/actions/005930.json": "fb7f67b9bfe8cc684f5a0a2bba889483f8514489f7c4cf8943e95247197aa6af",
+  "data/local/market/actions/000660.json": "85dafc38d8b8036b80eb7d576b96a3eef94aede939cfd86957c3c58e257d5337",
+  "data/local/market/actions/035420.json": "350c15114a1eb29b10add1e8009c6499582877f02f37c6b35cec9513107c1473"
 }

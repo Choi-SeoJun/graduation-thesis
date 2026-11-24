@@ -1,9 +1,11 @@
+import csv
 import json
 import unittest
 from datetime import date, timedelta
 
 from src.earnings import build_daily, validate_records
 from src.fetch_market import ROOT
+from src.news_schema import earnings_values
 
 
 class EarningsTest(unittest.TestCase):
@@ -30,6 +32,14 @@ class EarningsTest(unittest.TestCase):
         self.assertEqual(lookup["2023-04-26", "000660"]["earnings_release"], 1)
         self.assertEqual(lookup["2023-04-26", "000660"]["earnings_yoy_available"], 0)
         self.assertEqual(lookup["2023-04-26", "000660"]["earnings_op_yoy_pct"], 0)
+
+    def test_public_daily_context_uses_the_etoday_release_for_every_session(self):
+        with (ROOT / "research/etoday_daily_context.csv").open(encoding="utf-8", newline="") as f:
+            published = list(csv.DictReader(f))
+        days = sorted({date.fromisoformat(r["date"]) for r in published})
+        expected = [(r["date"], r["symbol"], earnings_values(r)) for r in build_daily(days, self.records)]
+        self.assertEqual([(r["date"], r["symbol"], earnings_values(r)) for r in published], expected)
+        self.assertEqual(len(expected), 3693)
 
     def test_modified_copy_waits_for_next_session(self):
         records = [dict(row) for row in self.records]

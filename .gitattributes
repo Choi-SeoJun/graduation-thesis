@@ -1,3 +1,4 @@
 # Public research inputs are included in the server bundle's byte-level manifest.
 research/*.json text eol=lf
 research/*.psv text eol=lf
+research/*.csv text eol=lf

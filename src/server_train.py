@@ -10,12 +10,13 @@ from statistics import mean, median
 from src.execution import run_account
 from src.fetch_market import ROOT, SYMBOLS, write_csv, write_json
 from src.market_data import FEATURES, HORIZONS
-from src.news_schema import CONDITIONS, CONTRACT, NEWS, earnings_values
+from src.news_schema import CONDITIONS, CONTRACT, NEWS, UNION_CONTRACT, earnings_values
+from src.source_comparison import compare_runs, summarize_seeds
 
 YEARS = (2022, 2023, 2024)
 SEEDS = (11, 23, 37, 53, 71)
 PREPARED = ROOT / "data/local/prepared"
-RESULTS = ROOT / "data/local/server-runs"
+RESULTS = ROOT / "data/local/server-runs/contract-sources-v1"
 GAMMA = 0.95
 TREND = ("ret_5", "ma_gap_20")
 TREND_VOL = (*TREND, "volatility_20")
@@ -43,7 +44,7 @@ def observable(row, price_only=False, complete_news_only=False):
     # Later article revisions can identify gaps that traders could not see at this close.
     if complete_news_only and row["news_status"] != "complete":
         return False
-    columns = FEATURES if price_only else (*FEATURES, *NEWS)
+    columns = FEATURES if price_only else (*FEATURES, *NEWS, *UNION_CONTRACT)
     return values(row, columns) is not None
 
 
@@ -54,6 +55,8 @@ def read_panel(symbol, horizon, price_only=False):
         rows = list(csv.DictReader(stream))
     if not rows:
         raise ValueError(f"Empty panel for {symbol}")
+    if not price_only and not set(UNION_CONTRACT).issubset(rows[0]):
+        raise ValueError("This panel predates the contract-source comparison. Rebuild it with python -m src.prepare.")
     dates = [row["date"] for row in rows]
     if dates != sorted(set(dates)) or dates[0] < "2020-01-01" or dates[-1] > "2024-12-31":
         raise ValueError("Dates must be unique, ordered and in development period")
@@ -74,7 +77,7 @@ def check_input(row, i, dates, horizon, price_only=False):
         raise ValueError("Unrealized or nonbinary target")
     if not price_only or row["news_status"] == "complete":
         earnings_values(row)
-        v = values(row, CONTRACT)
+        v = values(row, CONTRACT if price_only else (*CONTRACT, *UNION_CONTRACT))
         if v is None or any(n < 0 or n != int(n) for n in v):
             raise ValueError("Rebuild the panel with observed integer contract counts on every session")
 
@@ -280,31 +283,48 @@ def run_stock(symbol, years, horizon, method, train_models, price_only, feature_
             raise ValueError("Account and prepared stock do not share a session calendar")
     for y in years:
         train, decisions = panel_fold(rows, y, horizon, price_only, complete_news_only)
-        coverage = "not used" if price_only else sum(
-            bool(int(r["contract_signed"]) or int(r["contract_terminated"])) for r in train)
+        def event_days(columns):
+            return "not used" if price_only else sum(any(int(r[c]) for c in columns[:2]) for r in train)
         earnings = "not used" if price_only else sum(int(r["earnings_release"]) for r in train)
         print(f"{symbol} {y} {mode} inputs={feature_set} execution_bps={'0,5,10' if sensitivity else '5'} "
               f"training_labels={len(train)} eligible_validation_decisions={len(decisions)} "
-              f"training_days_with_contracts={coverage} training_days_with_earnings={earnings}")
+              f"training_etoday_contract_days={event_days(CONTRACT)} training_union_contract_days={event_days(UNION_CONTRACT)} "
+              f"training_days_with_earnings={earnings} conditions={','.join(conditions)}")
         if not train_models:
             continue
         if not train or not decisions:
             raise ValueError(f"Insufficient {mode} inputs in {y}. Check coverage before fitting.")
         history = [s for s in sessions if s.day.year < y]
         validation = [s for s in sessions if s.day.year == y]
-        for tag in conditions:
-            columns = market_columns if price_only else (*market_columns, *CONDITIONS[tag])
-            if method in ("both", "supervised"):
-                for name in ("logistic", "forest"):
+        variants = {tag: market_columns if price_only else (*market_columns, *CONDITIONS[tag]) for tag in conditions}
+        year_dir = out / str(y)
+        if method in ("both", "supervised"):
+            comparisons = []
+            for name in ("logistic", "forest"):
+                for tag, columns in variants.items():
                     probabilities = supervised(train, decisions, name, columns, horizon)
-                    results[(name, y, tag)] = replay_policy(out / str(y) / tag / name, validation,
-                                                         lambda d, held: probabilities.get(d), threshold, sensitivity)
-            if method in ("both", "fqi"):
-                for seed in SEEDS:
-                    transitions = exploration(history, by_day, seed, price_only, complete_news_only)
+                    results[(name, y, tag)] = replay_policy(year_dir / tag / name, validation,
+                                                            lambda d, held: probabilities.get(d), threshold, sensitivity)
+                if not price_only:
+                    comparisons.extend(compare_runs(year_dir, symbol, y, name, 11, by_day, sensitivity))
+            if comparisons:
+                write_csv(year_dir / "source-comparison/supervised.csv", list(comparisons[0]), comparisons)
+        if method in ("both", "fqi"):
+            comparisons = []
+            for seed in SEEDS:
+                name = f"fqi-{seed}"
+                # Both news sources replay exactly this exploration trajectory.
+                transitions = exploration(history, by_day, seed, price_only, complete_news_only)
+                for tag, columns in variants.items():
                     qs = q_scores(history, by_day, transitions, decisions, columns, seed)
-                    replay_policy(out / str(y) / tag / f"fqi-{seed}", validation,
+                    replay_policy(year_dir / tag / name, validation,
                                   lambda d, held: qs.get((d, held)), greedy, sensitivity)
+                if not price_only:
+                    comparisons.extend(compare_runs(year_dir, symbol, y, name, seed, by_day, sensitivity))
+            if comparisons:
+                write_csv(year_dir / "source-comparison/fqi.csv", list(comparisons[0]), comparisons)
+                summary = summarize_seeds(comparisons, SEEDS)
+                write_csv(year_dir / "source-comparison/fqi-seeds.csv", list(summary[0]), summary)
     if train_models and set(years) == set(YEARS) and method in ("supervised", "both"):
         write_json(out / "selected.json",
                    {"stock": symbol, "horizon": horizon, "mode": mode, "features": feature_set,
@@ -325,7 +345,7 @@ def main(argv=None):
     coverage = parser.add_mutually_exclusive_group()
     coverage.add_argument("--price-only", action="store_true", help="independent comparison on all usable price days")
     coverage.add_argument("--complete-news-only", action="store_true",
-                          help="retrospective sensitivity: restrict all three conditions to complete archive sessions")
+                          help="retrospective sensitivity: restrict every condition to sessions marked complete by the EToday archive")
     parser.add_argument("--train", action="store_true", help="opt in to fitting on the training server")
     args = parser.parse_args(argv)
     if args.train and args.horizon != 5 and args.method != "supervised":

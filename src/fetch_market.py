@@ -27,9 +27,9 @@ def atomic_text(path, text):
     os.replace(tmp, path)
 
 
-def write_csv(path, fields, rows):
+def write_csv(path, fields, rows, *, delimiter=","):
     buf = io.StringIO(newline="")
-    writer = csv.DictWriter(buf, fieldnames=fields, lineterminator="\n")
+    writer = csv.DictWriter(buf, fieldnames=fields, delimiter=delimiter, lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
     atomic_text(path, buf.getvalue())
@@ -64,7 +64,7 @@ def check_day(day):
         raise ValueError(f"Unexpected provider date {day}")
 
 
-def collect(symbol):
+def naver_bars(symbol):
     params = {"symbol": symbol, "requestType": 1, "startTime": START.strftime("%Y%m%d"),
               "endTime": END.strftime("%Y%m%d"), "timeframe": "day"}
     url = "https://api.finance.naver.com/siseJson.naver?" + urlencode(params)
@@ -77,7 +77,12 @@ def collect(symbol):
     by_day = {r["date"]: r for r in rows}
     if len(by_day) != len(rows) or not rows or min(by_day) != START.isoformat() or max(by_day) != "2024-12-30":
         raise ValueError(f"{symbol}: duplicate or incomplete price series")
+    return rows, url, hashlib.sha256(payload).hexdigest()
 
+
+def collect(symbol):
+    rows, url, naver_digest = naver_bars(symbol)
+    by_day = {r["date"]: r for r in rows}
     ticker = "^KS11" if symbol == "KOSPI" else symbol + ".KS"
     endpoint = "https://query1.finance.yahoo.com/v8/finance/chart/" + quote(ticker, safe="")
     yurl = endpoint + "?" + urlencode({"period1": ts(START), "period2": ts(END + timedelta(days=1)),
@@ -112,7 +117,7 @@ def collect(symbol):
     write_csv(MARKET / "comparison" / (symbol + ".csv"), FIELDS,
               ({"date": d, **values} for d, values in sorted(cross.items())))
     write_json(MARKET / "actions" / (symbol + ".json"), events)
-    return {"symbol": symbol, "naver_url": url, "naver_sha256": hashlib.sha256(payload).hexdigest(),
+    return {"symbol": symbol, "naver_url": url, "naver_sha256": naver_digest,
             "comparison_url": yurl, "rows": len(rows), "comparison_rows": len(cross),
             "first": min(by_day), "last": max(by_day),
             "only_primary": sorted(set(by_day) - set(cross)), "only_comparison": sorted(set(cross) - set(by_day)),

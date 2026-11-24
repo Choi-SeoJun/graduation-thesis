@@ -1,13 +1,16 @@
-"""Fields shared by the three matched trading experiments."""
+"""Fixed-width news inputs for the matched trading experiments."""
 from math import isfinite
 
 CONTRACT = ("contract_signed", "contract_terminated", "contract_reports")
+UNION_CONTRACT = tuple("union_" + field for field in CONTRACT)
 EARNINGS = ("earnings_release", "earnings_yoy_available", "earnings_op_yoy_pct")
 NEWS = (*CONTRACT, *EARNINGS)
 CONDITIONS = {
     "market": (None,) * len(NEWS),
     "contracts": CONTRACT + (None,) * len(EARNINGS),
     "contracts-earnings": NEWS,
+    "union-contracts": UNION_CONTRACT + (None,) * len(EARNINGS),
+    "union-contracts-earnings": UNION_CONTRACT + EARNINGS,
 }
 
 

@@ -1,0 +1,188 @@
+{
+  "start": "2019-11-01",
+  "end": "2024-12-31",
+  "symbols": {
+    "005930": {
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/005930.KS?period1=1572534000&period2=1735657200&interval=1d&events=div%2Csplits",
+      "split_count": 0,
+      "dividend_ex_dates": [
+        {
+          "date": "2019-12-27",
+          "provider_timestamp": 1577404800
+        },
+        {
+          "date": "2020-03-30",
+          "provider_timestamp": 1585526400
+        },
+        {
+          "date": "2020-06-29",
+          "provider_timestamp": 1593388800
+        },
+        {
+          "date": "2020-09-28",
+          "provider_timestamp": 1601251200
+        },
+        {
+          "date": "2020-12-29",
+          "provider_timestamp": 1609200000
+        },
+        {
+          "date": "2021-03-30",
+          "provider_timestamp": 1617062400
+        },
+        {
+          "date": "2021-06-29",
+          "provider_timestamp": 1624924800
+        },
+        {
+          "date": "2021-09-29",
+          "provider_timestamp": 1632873600
+        },
+        {
+          "date": "2021-12-29",
+          "provider_timestamp": 1640736000
+        },
+        {
+          "date": "2022-03-30",
+          "provider_timestamp": 1648598400
+        },
+        {
+          "date": "2022-06-29",
+          "provider_timestamp": 1656460800
+        },
+        {
+          "date": "2022-09-29",
+          "provider_timestamp": 1664409600
+        },
+        {
+          "date": "2022-12-28",
+          "provider_timestamp": 1672185600
+        },
+        {
+          "date": "2023-03-30",
+          "provider_timestamp": 1680134400
+        },
+        {
+          "date": "2023-06-29",
+          "provider_timestamp": 1687996800
+        },
+        {
+          "date": "2023-09-26",
+          "provider_timestamp": 1695686400
+        },
+        {
+          "date": "2023-12-27",
+          "provider_timestamp": 1703635200
+        },
+        {
+          "date": "2024-03-28",
+          "provider_timestamp": 1711584000
+        },
+        {
+          "date": "2024-06-27",
+          "provider_timestamp": 1719446400
+        },
+        {
+          "date": "2024-09-27",
+          "provider_timestamp": 1727395200
+        },
+        {
+          "date": "2024-12-27",
+          "provider_timestamp": 1735257600
+        }
+      ]
+    },
+    "000660": {
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/000660.KS?period1=1572534000&period2=1735657200&interval=1d&events=div%2Csplits",
+      "split_count": 0,
+      "dividend_ex_dates": [
+        {
+          "date": "2019-12-27",
+          "provider_timestamp": 1577404800
+        },
+        {
+          "date": "2020-12-29",
+          "provider_timestamp": 1609200000
+        },
+        {
+          "date": "2021-12-29",
+          "provider_timestamp": 1640736000
+        },
+        {
+          "date": "2022-03-30",
+          "provider_timestamp": 1648598400
+        },
+        {
+          "date": "2022-06-29",
+          "provider_timestamp": 1656460800
+        },
+        {
+          "date": "2022-09-29",
+          "provider_timestamp": 1664409600
+        },
+        {
+          "date": "2022-12-28",
+          "provider_timestamp": 1672185600
+        },
+        {
+          "date": "2023-03-30",
+          "provider_timestamp": 1680134400
+        },
+        {
+          "date": "2023-06-29",
+          "provider_timestamp": 1687996800
+        },
+        {
+          "date": "2023-09-26",
+          "provider_timestamp": 1695686400
+        },
+        {
+          "date": "2023-12-27",
+          "provider_timestamp": 1703635200
+        },
+        {
+          "date": "2024-03-28",
+          "provider_timestamp": 1711584000
+        },
+        {
+          "date": "2024-06-27",
+          "provider_timestamp": 1719446400
+        },
+        {
+          "date": "2024-09-27",
+          "provider_timestamp": 1727395200
+        }
+      ]
+    },
+    "035420": {
+      "source_url": "https://query1.finance.yahoo.com/v8/finance/chart/035420.KS?period1=1572534000&period2=1735657200&interval=1d&events=div%2Csplits",
+      "split_count": 0,
+      "dividend_ex_dates": [
+        {
+          "date": "2019-12-27",
+          "provider_timestamp": 1577404800
+        },
+        {
+          "date": "2020-12-29",
+          "provider_timestamp": 1609200000
+        },
+        {
+          "date": "2021-12-29",
+          "provider_timestamp": 1640736000
+        },
+        {
+          "date": "2022-09-29",
+          "provider_timestamp": 1664409600
+        },
+        {
+          "date": "2023-06-29",
+          "provider_timestamp": 1687996800
+        },
+        {
+          "date": "2023-12-27",
+          "provider_timestamp": 1703635200
+        }
+      ]
+    }
+  }
+}

@@ -9,7 +9,7 @@ from src.fetch_market import FIELDS, MARKET, START, END, SYMBOLS, fetch, write_c
 REVISION = "eeb328584b54211da285a74c68d6e1d5dc7d6a91"
 
 
-def main():
+def extract():
     collected = {symbol: {} for symbol in SYMBOLS}
     sources = []
     for year in range(START.year, END.year + 1):
@@ -35,16 +35,22 @@ def main():
                 collected[s][d] = {"date": d, **prices}
     with (MARKET / "raw/KOSPI.csv").open(encoding="utf-8") as f:
         calendar = {r["date"] for r in csv.DictReader(f)}
-    audits = {}
     for s, rows in collected.items():
         if set(rows) != calendar:
             raise ValueError(f"{s}: index/archive session mismatch: {sorted(calendar ^ set(rows))}")
-        with (MARKET / "raw" / f"{s}.csv").open(encoding="utf-8") as f:
+        write_csv(MARKET / "exchange" / f"{s}.csv", FIELDS, (rows[d] for d in sorted(rows)))
+    return collected, sources
+
+
+def main():
+    collected, sources = extract()
+    audits = {}
+    for symbol, rows in collected.items():
+        with (MARKET / "raw" / f"{symbol}.csv").open(encoding="utf-8") as f:
             other = {r["date"]: r for r in csv.DictReader(f)}
         differences = {k: sum(rows[d][k] != float(other[d][k]) for d in rows) for k in FIELDS[1:]}
-        audits[s] = {"rows": len(rows), "differences_vs_naver": differences}
-        write_csv(MARKET / "exchange" / f"{s}.csv", FIELDS, (rows[d] for d in sorted(rows)))
-        print(s, len(rows), differences)
+        audits[symbol] = {"rows": len(rows), "differences_vs_naver": differences}
+        print(symbol, len(rows), differences)
     write_json(MARKET / "exchange/audit.json", {"revision": REVISION, "sources": sources, "audit": audits})
 
 

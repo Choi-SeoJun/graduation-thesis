@@ -4,28 +4,22 @@ from collections import Counter
 
 from src.fetch_market import MARKET, ROOT, SYMBOLS, write_csv, write_json
 from src.market_data import FEATURES, HORIZONS
-from src.news_schema import CONTRACT, earnings_values
+from src.news_schema import CONTRACT, UNION_CONTRACT, earnings_values
 
 PREPARED = ROOT / "data/local/prepared"
-NEWS_DAILY = ROOT / "data/local/news/etoday/development/news_daily.csv"
+ETODAY_CONTEXT = ROOT / "research/etoday_daily_context.csv"
+CONTRACT_DAILY = ROOT / "research/contract_source_daily.csv"
 FOLD_YEARS = (2022, 2023, 2024)
 
 
-def news_index(path):
-    if not path.is_file():
-        return {}
+def daily_index(path):
     records = {}
     with path.open(encoding="utf-8-sig", newline="") as f:
         for r in csv.DictReader(f):
             key = (r["symbol"], r["date"])
-            status = r["news_status"]
-            if key in records or status not in ("complete", "unknown"):
-                raise ValueError(f"Invalid day coverage: {key} {status}")
-            counts = {k: int(r[k]) for k in CONTRACT}
-            # Count known editions even on a day with another, unresolved article.
-            if min(counts.values()) < 0:
-                raise ValueError(f"Invalid observed count: {key}")
-            records[key] = {"news_status": status, **counts, **earnings_values(r)}
+            if key in records:
+                raise ValueError(f"Duplicate date in {path.name}: {key}")
+            records[key] = r
     return records
 
 
@@ -39,14 +33,21 @@ def trainable(row, year, horizon, require_news=False):
 
 
 def main():
-    news = news_index(NEWS_DAILY)
-    if not news:
-        raise ValueError("Build reviewed daily news before preparing the panel")
+    context = daily_index(ETODAY_CONTEXT)
+    contracts = daily_index(CONTRACT_DAILY)
     with (MARKET / "processed/market_features.csv").open(encoding="utf-8", newline="") as f:
-        all_rows = [{**r, **news[r["symbol"], r["date"]]} for r in csv.DictReader(f)]
+        all_rows = list(csv.DictReader(f))
     keys = {(r["symbol"], r["date"]) for r in all_rows}
-    if len(keys) != len(all_rows) or (set(news) and set(news) != keys):
-        raise ValueError("Price/news session panels disagree")
+    if len(keys) != len(all_rows) or set(context) != keys or set(contracts) != keys:
+        raise ValueError("Market, EToday context and contract-source panels must cover exactly the same stock-sessions")
+    count_fields = (*CONTRACT, *UNION_CONTRACT)
+    for row in all_rows:
+        key = (row["symbol"], row["date"])
+        status = context[key]["news_status"]
+        counts = {c: int(contracts[key][c]) for c in count_fields}
+        if status not in ("complete", "unknown") or min(counts.values()) < 0:
+            raise ValueError(f"Invalid news coverage or count on {key}")
+        row.update(news_status=status, **counts, **earnings_values(context[key]))
     folds = []
     for symbol in SYMBOLS:
         rows = [r for r in all_rows if r["symbol"] == symbol]

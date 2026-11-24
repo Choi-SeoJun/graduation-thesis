@@ -25,7 +25,7 @@ def sample_rows():
     for i, day in enumerate(dates):
         end = i + 6
         row = {k: "0.1" for k in srv.FEATURES}
-        row.update({k: "0" for k in srv.NEWS})
+        row.update({k: "0" for k in (*srv.NEWS, *srv.UNION_CONTRACT)})
         row.update(symbol="005930", date=day, next_open_date=dates[i+1] if i+1 < len(dates) else "",
                    label_end_date_5=dates[end] if end < len(dates) else "",
                    target_up_5=str(i % 2) if end < len(dates) else "", news_status="complete")
@@ -64,6 +64,65 @@ class ServerContractTest(unittest.TestCase):
             self.assertGreater(result["book_return"], expensive["book_return"])
             self.assertEqual((cheap["execution_slippage_bps"], result["execution_slippage_bps"],
                               expensive["execution_slippage_bps"]), (0, 5, 10))
+
+    def test_both_contract_source_pairs_share_earnings_and_equal_input_dimension(self):
+        row = sample_rows()[0] | {"contract_signed": "1", "union_contract_signed": "2", "earnings_release": "1"}
+        self.assertEqual({len(columns) for columns in srv.CONDITIONS.values()}, {6})
+        for tag, pulse in (("contracts", 0.), ("contracts-earnings", 1.)):
+            first = srv.values(row, srv.CONDITIONS[tag])
+            second = srv.values(row, srv.CONDITIONS["union-" + tag])
+            self.assertEqual((first[0], second[0]), (1., 2.))
+            self.assertEqual(first[1:], second[1:])
+            self.assertEqual(first[3], pulse)
+        old = row.copy()
+        del old["union_contract_signed"]
+        with self.assertRaises(ValueError):
+            srv.check_input(row | {"union_contract_signed": "-1"}, 0, [r["date"] for r in sample_rows()], 5)
+        self.assertTrue(srv.observable(old, price_only=True))
+
+    def test_server_entry_pairs_supervised_and_fqi_ledgers_without_fitting(self):
+        rows = sample_rows()
+        days = [date.fromisoformat(r["date"]) for r in rows]
+        sessions = [Session(d, days[i-1] if i else d - timedelta(days=1), 100+i, 101+i, "open", True)
+                    for i, d in enumerate(days)]
+        # Use opposite fixed policies in the two source arms; no estimator is fitted in this test.
+        def probabilities(train, decisions, name, columns, horizon):
+            p = .9 if "union_contract_signed" in columns else .1
+            return {date.fromisoformat(r["date"]): p for r in decisions}
+
+        def q_values(history, by_day, transitions, decisions, columns, seed):
+            q = (0., 1.) if "union_contract_signed" in columns else (1., 0.)
+            return {(date.fromisoformat(r["date"]), held): q for r in decisions for held in (False, True)}
+
+        with (tempfile.TemporaryDirectory() as tmp, patch.object(srv, "RESULTS", Path(tmp)),
+              patch.object(srv, "read_panel", return_value=rows), patch("src.rights.load_sessions", return_value=sessions),
+              patch.object(srv, "supervised", side_effect=probabilities) as classifiers,
+              patch.object(srv, "q_scores", side_effect=q_values) as q_estimates,
+              patch.object(srv, "exploration", wraps=srv.exploration) as exploration, redirect_stdout(io.StringIO())):
+            srv.run_stock("005930", (2022,), 5, "both", True, False)
+            self.assertEqual(classifiers.call_count, 2 * 5)
+            self.assertEqual(q_estimates.call_count, 5 * len(srv.SEEDS))
+            self.assertEqual(exploration.call_count, len(srv.SEEDS))
+            result = Path(tmp) / "paired-observed/h5/005930/2022/source-comparison"
+            with (result / "supervised.csv").open(newline="") as f:
+                supervised = list(csv.DictReader(f))
+            with (result / "fqi.csv").open(newline="") as f:
+                fqi = list(csv.DictReader(f))
+            with (result / "fqi-seeds.csv").open(newline="") as f:
+                seeds = list(csv.DictReader(f))
+            self.assertEqual((len(supervised), len(fqi), len(seeds)), (4, 10, 2))
+            self.assertEqual({int(s["seed"]) for s in fqi}, set(srv.SEEDS))
+            for pair in supervised + fqi:
+                self.assertEqual(pair["buy_sell_hold_changed_days"], "1")
+                self.assertEqual(pair["filled_side_changed_nonterminal_days"], "1")
+                self.assertEqual(pair["terminal_fill_side_changed"], "1")
+                self.assertEqual(pair["trades_delta"], "2")
+                self.assertGreater(float(pair["net_return_delta_pp"]), 0)
+            with (result / "with-earnings/logistic/daily.csv").open(newline="") as f:
+                daily = list(csv.DictReader(f))
+            self.assertEqual((daily[0]["decision_close"], daily[0]["execution_open"]), ("2021-12-31", "2022-01-03"))
+            self.assertEqual((daily[0]["etoday_decision"], daily[0]["union_decision"]), ("hold", "buy"))
+            self.assertEqual((daily[-1]["union_decision"], daily[-1]["union_order"]), ("", "sell"))
 
     def test_future_revision_flag_does_not_block_primary_training_or_decisions(self):
         rows = sample_rows()

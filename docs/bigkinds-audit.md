@@ -91,7 +91,7 @@ NAVER의 지역 언론사 8곳 동시 최종 선정은 거래 상대방 기준�
 
 ## 졸업논문 적용과 재현
 
-5년 대조를 재현하려면 회원 검색에서 위 검색식과 12개 기간을 각각 지정하고 ‘분석 결과 및 시각화 → 엑셀 다운로드’를 선택한다. 파일을 원래 이름으로 `data/local/news/bigkinds/exports/`에 둔 뒤 개발용 KOSPI 거래 달력이 있는 저장소에서 아래 명령을 실행한다. 원문과 회원 엑셀은 로컬에서만 보관한다. 빅카인즈 추가 사건을 모델에 넣는 실험에서는 자료원별로 새 입력 버전을 만들어 같은 거래일에 비교해야 한다. [공식 뉴스 검색](https://www.bigkinds.or.kr/v2/news/search.do)
+5년 대조를 재현하려면 회원 검색에서 위 검색식과 12개 기간을 각각 지정하고 ‘분석 결과 및 시각화 → 엑셀 다운로드’를 선택한다. 파일을 원래 이름으로 `data/local/news/bigkinds/exports/`에 둔 뒤 개발용 KOSPI 거래 달력이 있는 저장소에서 아래 명령을 실행한다. 원문과 회원 엑셀은 로컬에서만 보관한다. 서버용 실험은 이 원장을 사용해 이투데이 단독과 이투데이·타 매체 합집합을 같은 거래일에 비교한다. [두 출처의 일별 입력](../research/contract_source_daily.csv) · [서버 실행법](../README.md#서버에서-시작하기) [공식 뉴스 검색](https://www.bigkinds.or.kr/v2/news/search.do)
 
 ```text
 python -m src.bigkinds_exports

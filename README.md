@@ -6,14 +6,17 @@
 
 ## 무엇을 비교하나
 
-| 학습 방법 | 가격·거래량·시장 | 왼쪽 입력 + 계약 | 왼쪽 입력 + 분기 실적 |
-|---|---|---|---|
-| 지도학습 | 5거래일 상승 확률로 매매 | 체결·해지와 보도 수 추가 | 분기 실적 발표와 영업이익 변화 추가 |
-| 강화학습 | 다음 시가의 주식·현금 보유 선택 | 같은 계약 정보로 별도 학습 | 같은 분기 실적까지 포함해 별도 학습 |
+**주 비교는 분기 실적을 이투데이로 고정하고 계약 뉴스의 출처만 바꾼 두 계좌다.** 각 종목에서 같은 거래일·모델·비용으로 매수일과 매도일, 거래비용 차감 후 수익률, 최대낙폭의 차이를 계산한다. 같은 계약의 후속 보도는 한 사건으로 묶고, 여러 매체에서 확인되면 먼저 이용할 수 있었던 거래일에 한 번만 반영한다.
 
-여섯 조건 모두 **삼성전자(`005930`), SK하이닉스(`000660`), NAVER(`035420`)**의 2020~2025년 자료를 대상으로 한다. 각 종목의 과거 자료로 따로 학습한 뒤 같은 종목의 이후 기간에서 매매 성과를 평가한다. 주문은 다음 거래일 시가에 체결된다고 가정하고 같은 거래비용을 적용한다. 각 종목의 매수 후 보유, 이동평균 매매 등 단순한 전략과도 비교한다.
+| 서버 조건 | 계약 뉴스 | 분기 실적 |
+|---|---|---|
+| `contracts-earnings` · 주 비교 | 이투데이 | 이투데이 |
+| `union-contracts-earnings` · 주 비교 | 이투데이 + 빅카인즈 수록 타 매체 | 이투데이 |
+| `contracts` | 이투데이 | 사용하지 않음 |
+| `union-contracts` | 이투데이 + 빅카인즈 수록 타 매체 | 사용하지 않음 |
+| `market` | 사용하지 않음 | 사용하지 않음 |
 
-계약은 보도 본문에서 거래 당사자와 확정 여부를 확인한다. 2020~2024년 빅카인즈에서 전체 매체를 검색해 고유 기사 180,526건을 확보했다. 공식 분기 발표 60건은 세 종목 모두 이투데이와 다른 매체에서 발표일 종가 전에 확인됐다. 확정 계약의 추가 발견과 매매 판단일 변화는 종목별로 정리했다. [빅카인즈 대조 결과](docs/bigkinds-audit.md)
+다섯 조건 모두 같은 가격·거래량·시장 입력을 사용한다. **삼성전자(`005930`), SK하이닉스(`000660`), NAVER(`035420`)**를 각각 자기 과거 자료로 학습하고 다음 기간에 검증한다. 지도학습 후보는 로지스틱 회귀와 랜덤포레스트, 강화학습은 Fitted Q Iteration이다. 모든 계좌에서 다음 거래일 시가 체결과 같은 거래비용을 적용한다. [모델·거래 규칙](./졸업논문%20연구설계.md) · [계약 뉴스 출처별 대조](docs/bigkinds-audit.md)
 
 ## 어느 기간으로 검증하나
 
@@ -26,28 +29,46 @@
 
 ## 현재 결과
 
-2020~2024년 개발 기간의 일봉과 이투데이 기업 사건을 거래일별로 연결했다. 종목·연도별 계약과 분기 실적, 공통 표본의 크기, 단순 전략의 장부수익률과 거래원장은 [학습 전 데이터 점검 결과](docs/pretraining.md)에 정리했다. [자료와 검증 방법](docs/data-notes.md) · [계약 본문 판정](research/contract_events.json) · [분기 실적 원장](research/earnings.json)
+각 종목의 2020~2024년 거래일 **1,231일**에 시장 입력과 출처별 계약 사건, 이투데이 분기 발표 20건을 연결했다. 각 사건의 첫 가용 시각과 종가 판단일을 추적할 수 있다. 아래 자료는 학습 전 입력 점검 결과다. [종목·연도별 집계](docs/pretraining.md) · [사건별 근거](research/contract_source_events.psv) · [계약 뉴스 일별 입력](research/contract_source_daily.csv) · [분기 실적·자료 공백 일별 입력](research/etoday_daily_context.csv)
 
 ## 서버에서 시작하기
 
-연구자용 로컬 파일 `data/local/server-handoff.zip`에는 개발 입력, 배당 원장, 실행 코드와 파일별 SHA-256이 들어 있다. 서버의 빈 작업 디렉터리에 풀면 공개 GitHub에 올리지 않은 시세·입력표가 함께 배치된다. Python 3.11 기준으로 아래 명령은 입력과 시간 경계만 검사한다.
+새 서버에서는 Python 3.11을 사용한다. 프로젝트를 내려받고 가상환경을 만든 뒤 다음 명령으로 개발 자료를 복원한다. 준비 명령은 시세를 내려받고 입력 파일 해시를 확인한다. 뉴스 판정과 분기 실적은 저장소에 있어 회원 로그인이나 기사 재수집이 필요하지 않다.
 
 ```sh
-python -m src.server_train
-python -m src.server_train --complete-news-only
-python -m src.server_train --price-only
-```
-
-서버에서 모델을 학습하는 단계에서는 다음 명령을 사용한다. 주 실험은 5거래일 목표와 세 입력 조건으로 종목별 전체 개발 거래일에 판단한다. 확인할 수 있는 기사 시점까지 관측된 사건만 제공한다. 사후에 자료 공백이 발견된 날을 제외하는 민감도 분석은 `--complete-news-only`, 가격 열만 사용하는 보조 비교는 `--price-only`로 별도 저장한다.
-
-```sh
+git clone https://github.com/Choi-SeoJun/graduation-thesis.git
+cd graduation-thesis
+python3.11 -m venv .venv
+. .venv/bin/activate
 python -m pip install -r requirements-server.txt
-python -m src.server_train --train
-python -m src.server_train --train --complete-news-only
-python -m src.server_train --train --price-only
+python -m src.server_setup
+python -m src.server_train
 ```
 
-연도·종목 단위로 먼저 실행하려면 `--year 2022 --symbol 005930`을 추가한다. 지도학습의 목표 기간 민감도는 `--method supervised --horizon 1` 또는 `--method supervised --horizon 10`으로 바꾼다. `--features`로 `trend`, `trend-vol`, `trend-vol-market`, `trend-vol-volume`, `all` 중 하나를 골라 변수 묶음의 기여도를 비교한다. `--slippage-sensitivity`는 같은 모델 점수를 사용해 편도 슬리피지 0%, 0.05%, 0.10%에서 계좌를 재생한다. 서버 출력은 `data/local/server-runs/`에 남는다. 2025년 최종 시험은 모델과 설정을 확정한 뒤 진행한다.
+입력을 점검한 뒤 다음 명령 하나로 **세 종목 모두** 2022·2023·2024년 순차 검증을 실행한다. 종목마다 두 지도학습 후보와 다섯 시드의 강화학습을 다섯 입력 조건에서 각각 새로 학습한다.
+
+```sh
+python -m src.server_train --train
+```
+
+종목별로 실행할 때는 다음 중 원하는 줄을 쓴다. 각 종목의 결과는 별도 디렉터리에 저장된다.
+
+```sh
+python -m src.server_train --train --symbol 005930
+python -m src.server_train --train --symbol 000660
+python -m src.server_train --train --symbol 035420
+```
+
+시세 재다운로드 없이 시작하려면 연구자용 `data/local/server-handoff.zip`을 서버의 **빈 디렉터리**에 푼다. 세 종목의 준비된 입력과 실행 코드가 들어 있다. 그 디렉터리에서 Python 3.11 환경에 같은 패키지를 설치한 뒤 아래 명령을 실행한다.
+
+```sh
+python -m src.server_setup --verify-only
+python -m src.server_train --train
+```
+
+기본 결과는 `data/local/server-runs/contract-sources-v1/paired-observed/h5/<종목코드>/<검증연도>/source-comparison/`에 저장된다. `supervised.csv`는 지도학습 후보별, `fqi.csv`는 강화학습 시드별 결과다. `fqi-seeds.csv`는 같은 시드 쌍에서 구한 차이의 중앙값과 범위를 담는다. **주 비교는 `contrast=with-earnings`를 읽는다.** `net_return_delta_pp`가 양수이면 다매체 조건의 비용 차감 후 수익률이 높았고, `drawdown_delta_pp`가 양수이면 다매체 계좌의 최대낙폭이 더 컸다. `with-earnings/<모델>/daily.csv`에서 판단일과 체결일, 목표 보유 상태, 주문 방향·수량을 확인할 수 있다. 연말 강제청산은 별도 표시한다.
+
+종목·연도 일부를 검증하려면 `--symbol 005930 --year 2022`를 추가한다. `--method supervised --horizon 1` 또는 `--horizon 10`은 지도학습의 목표 기간을 바꾸는 보조 실험이다. `--features`는 시장 변수 묶음, `--complete-news-only`는 이투데이 자료 공백일을 제외한 사후 비교, `--slippage-sensitivity`는 같은 점수에 편도 슬리피지 0·5·10bp를 적용한다. `--price-only`는 시장 입력으로만 실행한다. [변수 정의와 표본](docs/data-notes.md)
 
 ## 로컬에서 개발 자료 다시 만들기
 
@@ -63,6 +84,7 @@ python -m src.contract_review queue
 python -m src.contract_review finish
 python -m src.earnings
 python -m src.news_events
+python -m src.contract_sources
 python -m src.prepare
 python -m src.baselines
 python -m unittest discover -s tests
@@ -71,4 +93,4 @@ python -m src.report
 python -m src.bundle
 ```
 
-시세·기사 목록·서버용 입력·모의계좌 원장은 로컬의 `data/local/`에 보관한다. GitHub에는 코드, 출처, 기사별 자체 판정과 집계 결과를 기록한다.
+GitHub에는 연구자가 판정한 사건·거래일별 뉴스 입력, 실행 코드와 파일 해시를 기록한다. 시세 원본, 회원 엑셀, 기사 본문과 모의계좌 거래원장은 로컬의 `data/local/`에 보관한다.

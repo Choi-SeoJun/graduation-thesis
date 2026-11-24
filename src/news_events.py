@@ -8,7 +8,7 @@ from datetime import date, datetime, time, timedelta
 
 from src.fetch_market import KST, MARKET, ROOT, SYMBOLS, write_csv, write_json
 from src.news_archive import ROOT as NEWS_ROOT
-from src.news_schema import CONTRACT, earnings_values
+from src.news_schema import CONTRACT, EARNINGS, earnings_values
 
 LATE_CLOSE = {date.fromisoformat(d) for d in
               ("2020-12-03", "2021-11-18", "2022-11-17", "2023-11-16", "2024-11-14")}
@@ -116,6 +116,11 @@ def main():
     for row in rows:
         row.update(earnings_values(eps[row["symbol"], row["date"]]))
     write_csv(out / "news_daily.csv", list(rows[0]), rows)
+    # This shareable, price-free snapshot fixes the earnings and retrospective
+    # EToday archive coverage used by both contract-source experiments.
+    fields = ("date", "symbol", "news_status", *EARNINGS)
+    write_csv(ROOT / "research/etoday_daily_context.csv", fields,
+              ({k: row[k] for k in fields} for row in rows))
     write_json(out / "coding_audit.json", {
         "reviewed_article_stock_pairs": len(reviewed),
         "unusable_or_unreviewed_pairs": unresolved,

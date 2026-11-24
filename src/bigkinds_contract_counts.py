@@ -8,8 +8,8 @@ from pathlib import Path
 RESEARCH = Path(__file__).resolve().parents[1] / "research"
 
 
-def samsung_rows():
-    data = json.loads((RESEARCH / "bigkinds_samsung.json").read_text(encoding="utf-8"))
+def samsung_groups(data):
+    """Resolve filing keys to the event IDs used in the original EToday ledger."""
     # The same case can enter by its original EToday event and independently by a filing.
     groups = defaultdict(list)
     for row in data["reference_anchors"] + data["supplementary"]:
@@ -17,11 +17,20 @@ def samsung_rows():
     for row in data["contract_disclosures"]:
         for key in row["baseline_keys"] or [row["key"]]:
             groups[key].append(row)
-    for key, group in groups.items():
-        # A filing can correct the event classification of a matched press article.
-        if any(r.get("adjudication") in {
-            "amendment", "counterparty_conflict", "mixed_entity_unallocated"
-        } for r in group):
+    return groups
+
+
+def excluded_samsung_group(group):
+    # A filing can correct the event classification of a matched press article.
+    return any(r.get("adjudication") in {
+        "amendment", "counterparty_conflict", "mixed_entity_unallocated"
+    } for r in group)
+
+
+def samsung_rows():
+    data = json.loads((RESEARCH / "bigkinds_samsung.json").read_text(encoding="utf-8"))
+    for key, group in samsung_groups(data).items():
+        if excluded_samsung_group(group):
             continue
         other = [r["member"] for r in group if r.get("member")]
         etoday = [r["etoday"] for r in group if r.get("etoday")]

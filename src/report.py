@@ -8,7 +8,7 @@ from statistics import median
 
 from src.fetch_market import ROOT, MARKET, SYMBOLS, atomic_text, write_json
 from src.market_data import FEATURES
-from src.prepare import PREPARED
+from src.prepare import PREPARED, ETODAY_CONTEXT, CONTRACT_DAILY
 from src.baselines import OUTPUT
 
 NAMES = {"005930":"삼성전자","000660":"SK하이닉스","035420":"NAVER"}
@@ -62,26 +62,24 @@ def main():
                   "각 선은 2019년 말 종가를 100으로 둔 월말 가격이다. 배당·거래비용을 포함한 계좌 수익률은 별도로 계산한다.", "",
                   "## 연도별 시세 및 뉴스", "",
                   "주 실험은 모든 개발 거래일에서 판단한다. 계약은 그 시각까지 확인할 수 있는 판본에서만 세고, 같은 계약의 반복 보도는 한 사건으로 묶는다. ‘자료 공백’은 현재 남은 기사에서 원래 시점의 내용을 완전히 복원할 수 없는 날이다. 이 표시는 사후 민감도 분석에서만 사용한다.", "",
-                  "| 종목 | 연도 | 시세 거래일 | 공백 미발견 | 자료 공백 | 체결 사건¹ | 해지 사건¹ | 계약 보도¹ | 분기 실적 주 실험 / 공백 제외 시 |",
-                  "|---|---:|---:|---:|---:|---:|---:|---:|---:|"])
+                  "| 종목 | 연도 | 거래일 | 이투데이 자료 공백일 | 이투데이 체결 / 해지 / 발표 | 이투데이+빅카인즈 체결 / 해지 / 발표 | 계약 입력이 달라진 날 | 이투데이 실적 발표 |",
+                  "|---|---:|---:|---:|---|---|---:|---:|"])
     for s, rows in panels.items():
         for y in range(2020,2025):
             yr = [r for r in rows if r["date"].startswith(str(y))]
             complete = [r for r in yr if r["news_status"] == "complete"]
-            counts = [sum(int(r[k]) for r in yr)
-                      for k in ("contract_signed","contract_terminated","contract_reports")]
+            columns = ("contract_signed", "contract_terminated", "contract_reports")
+            counts = [" / ".join(str(sum(int(r[prefix + k]) for r in yr)) for k in columns)
+                      for prefix in ("", "union_")]
+            changed = sum(any(r[k] != r["union_" + k] for k in columns) for r in yr)
             earnings = sum(int(r['earnings_release']) for r in yr)
-            paired_earnings = sum(int(r['earnings_release']) for r in complete)
-            lines.append(f"| {NAMES[s]} | {y} | {len(yr)} | {len(complete)} | {len(yr)-len(complete)} | " +
-                         " | ".join(map(str,counts)) + f" | {earnings} / {paired_earnings} |")
-    event_counts = {s: sum(int(r["contract_signed"]) for r in rows)
-                    for s, rows in panels.items()}
-    terminations = sum(int(r["contract_terminated"]) for rows in panels.values() for r in rows)
+            lines.append(f"| {NAMES[s]} | {y} | {len(yr)} | {len(yr)-len(complete)} | "
+                         f"{counts[0]} | {counts[1]} | {changed} | {earnings} |")
     archive = json.loads((ROOT / 'research/contract_audit.json').read_text(encoding='utf-8'))
     counts = archive['counts']
     raw = archive['unique_counts_before_close_alignment']
-    lines.extend(["", f"¹ 주 실험 표본에서 첫 사용일에 집계된 체결은 삼성전자 {event_counts['005930']}건, SK하이닉스 {event_counts['000660']}건, NAVER {event_counts['035420']}건이고 해지는 세 종목 합계 {terminations}건이다. 발행 후 바뀐 본문은 확인한 수정 시각 이후에 사용한다. 희소한 사건의 효과는 종목별 독립 관측 수와 실제 주문 변화를 함께 보고 해석한다.",
-                  "", f"회사명이 제목에 등장하는 이투데이 기사 {counts['articles']:,}건 중 {counts['nonempty_bodies']:,}건의 보존 본문에 계약 표현 검색을 적용하고 후보 문맥과 당사자 근거를 점검했다. 같은 기사가 여러 종목을 언급할 수 있다. 전체 사건 원장과 발표일 자료는 아래와 같다. [판정 방법과 사례](../research/contract_method.md)", "",
+    lines.extend(["", "체결에는 계약 당사자로 최종 선정된 경우를 포함한다. 같은 발표로 여러 계약을 알렸다면 발표 수는 한 번만 센다. 두 자료원의 계약 입력이 달라진 날은 위 세 열 중 하나라도 다른 날이다. 선행 보도로 날짜가 이동한 사건은 앞당겨진 날짜와 원래 날짜의 입력을 모두 바꿀 수 있다. 모델이 실제로 다른 주문을 낸 날짜는 서버 실험 결과에서 따로 센다. [거래일별 두 조건의 입력](../research/contract_source_daily.csv) · [사건별 근거](../research/contract_source_events.psv)",
+                  "", f"아래는 비교를 확장하기 전의 이투데이 자료 수집 이력이다. 회사명이 제목에 등장하는 이투데이 기사 {counts['articles']:,}건 중 {counts['nonempty_bodies']:,}건의 보존 본문에서 후보를 찾았다. 위의 실험 입력에는 공급사명·공시 모음으로 역검색한 이투데이 보도와 공시 원문 재판정도 반영했다. [초기 판정 방법과 사례](../research/contract_method.md)", "",
                   "| 종목 | 본문에서 확인한 고유 체결 | 고유 해지 | 분기 실적 발표 | 최초 기사에서 전년 동기 증감률 확인 |",
                   "|---|---:|---:|---:|---:|"])
     for symbol, rows in panels.items():
@@ -127,11 +125,12 @@ def main():
     lines.extend(["","배당은 개인 소득세 차감 전 금액을 사용했다. 권리가 생겨도 금액이 발표되기 전에는 장부자산에 더하지 않는다. ‘미확정 배당 권리’가 표시된 칸의 경제적 최종 수익은 나중에 확정된 배당에 따라 달라진다. 로컬 기준선 표 `annual.csv`에는 2024년 말까지 뒤늦게 확인된 권리를 더한 사후 수익도 별도 열로 표시했다. 끝까지 미확정이면 빈칸이다. 이 사후 값은 매매 판단·학습 보상에 사용하지 않는다. `cost-sensitivity.csv`에는 편도 슬리피지를 0%, 0.05%, 0.10%로 바꿨을 때의 장부수익·낙폭·거래 횟수를 기록했다.", ""])
     plot_monthly(docs/"monthly-prices.png")
     inputs = [PREPARED/f"{s}.csv" for s in SYMBOLS]
-    inputs += [PREPARED/"folds.csv", MARKET/"raw/KOSPI.csv",
-               ROOT/"data/local/news/etoday/development/news_daily.csv",
+    inputs += [PREPARED/"folds.csv", MARKET/"raw/KOSPI.csv", ETODAY_CONTEXT, CONTRACT_DAILY,
+               ROOT/"research/contract_source_events.psv", ROOT/"research/market_action_audit.json",
                ROOT/"research/dividends.psv", ROOT/"research/etoday_events.json", ROOT/"research/earnings.json",
                ROOT/"research/contract_events.json", ROOT/"research/contract_gaps.json", ROOT/"research/contract_audit.json"]
     inputs += [MARKET/"exchange"/f"{s}.csv" for s in SYMBOLS]
+    inputs += [MARKET/"actions"/f"{s}.json" for s in SYMBOLS]
     write_json(docs/"input-fingerprints.json",
                {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs})
     atomic_text(docs/"pretraining.md","\n".join(lines))
