@@ -1,0 +1,2 @@
+# Server model fitting (Python 3.11). Data preparation and dry checks use the standard library.
+scikit-learn==1.7.2
