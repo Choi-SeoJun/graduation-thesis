@@ -15,15 +15,18 @@ def main():
         panel = read_panel(symbol,5)
         if not any(r["news_status"] == "complete" for r in panel) or len(load_sessions(symbol)) != len(panel):
             raise ValueError(f"Incomplete prepared panel: {symbol}")
-    files = [ROOT/"requirements-server.txt", ROOT/"research/dividends.psv", ROOT/"README.md",
+    files = [ROOT/"requirements-server.txt", ROOT/"README.md",
              ROOT/"졸업논문 연구설계.md", ROOT/"선행연구 검토.md",
              ROOT/"docs/data-notes.md", ROOT/"docs/pretraining.md", ROOT/"docs/monthly-prices.png",
+             ROOT/"docs/earnings.md", ROOT/"docs/bigkinds-audit.md",
+             ROOT/"research/contract_method.md",
              ROOT/"docs/input-fingerprints.json",
              MARKET/"raw/KOSPI.csv", MARKET/"exchange/audit.json", MARKET/"sources.json",
              PREPARED/"folds.csv", PREPARED/"inventory.json", NEWS_DAILY]
     files.extend(sorted((ROOT/"src").glob("*.py")))
     files.extend(sorted((ROOT/"tests").glob("test_*.py")))
     files.extend(sorted((ROOT/"research").glob("*.json")))
+    files.extend(sorted((ROOT/"research").glob("*.psv")))
     for symbol in SYMBOLS:
         files.extend((PREPARED/f"{symbol}.csv", MARKET/"exchange"/f"{symbol}.csv",
                       MARKET/"actions"/f"{symbol}.json"))

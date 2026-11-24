@@ -4,10 +4,10 @@ from collections import Counter
 
 from src.fetch_market import MARKET, ROOT, SYMBOLS, write_csv, write_json
 from src.market_data import FEATURES, HORIZONS
+from src.news_schema import CONTRACT, earnings_values
 
 PREPARED = ROOT / "data/local/prepared"
 NEWS_DAILY = ROOT / "data/local/news/etoday/development/news_daily.csv"
-NEWS_FIELDS = ("contract_signed", "contract_terminated", "contract_reports")
 FOLD_YEARS = (2022, 2023, 2024)
 
 
@@ -21,16 +21,11 @@ def news_index(path):
             status = r["news_status"]
             if key in records or status not in ("complete", "unknown"):
                 raise ValueError(f"Invalid day coverage: {key} {status}")
-            if status == "complete":
-                counts = {k: int(r[k]) for k in NEWS_FIELDS}
-                # One report can announce several contracts. The unit of each count differs.
-                if min(counts.values()) < 0:
-                    raise ValueError(f"Invalid news counts: {key}")
-            else:
-                if any(r[k] not in ("", None) for k in NEWS_FIELDS):
-                    raise ValueError(f"Unknown day contains news counts: {key}")
-                counts = dict.fromkeys(NEWS_FIELDS)
-            records[key] = {"news_status": status, **counts}
+            counts = {k: int(r[k]) for k in CONTRACT}
+            # Count known editions even on a day with another, unresolved article.
+            if min(counts.values()) < 0:
+                raise ValueError(f"Invalid observed count: {key}")
+            records[key] = {"news_status": status, **counts, **earnings_values(r)}
     return records
 
 
@@ -45,9 +40,10 @@ def trainable(row, year, horizon, require_news=False):
 
 def main():
     news = news_index(NEWS_DAILY)
-    missing = {"news_status": "unknown", **dict.fromkeys(NEWS_FIELDS)}
+    if not news:
+        raise ValueError("Build reviewed daily news before preparing the panel")
     with (MARKET / "processed/market_features.csv").open(encoding="utf-8", newline="") as f:
-        all_rows = [{**r, **news.get((r["symbol"], r["date"]), missing)} for r in csv.DictReader(f)]
+        all_rows = [{**r, **news[r["symbol"], r["date"]]} for r in csv.DictReader(f)]
     keys = {(r["symbol"], r["date"]) for r in all_rows}
     if len(keys) != len(all_rows) or (set(news) and set(news) != keys):
         raise ValueError("Price/news session panels disagree")
@@ -63,7 +59,8 @@ def main():
                 folds.append({"symbol": symbol, "validation_year": year, "horizon": h,
                               "train_start": rows[0]["date"], "train_end": f"{year-1}-12-31",
                               "train_price": sum(trainable(r, year, h) for r in rows),
-                              "train_paired": sum(trainable(r, year, h, True) for r in rows),
+                              "train_paired": sum(trainable(r, year, h) for r in rows),
+                              "train_complete_news_only": sum(trainable(r, year, h, True) for r in rows),
                               "validation_sessions": len(validation),
                               "validation_news_complete": sum(r["news_status"] == "complete" for r in validation)})
     write_csv(PREPARED / "folds.csv", list(folds[0]), folds)

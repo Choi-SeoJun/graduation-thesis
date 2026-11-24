@@ -1,0 +1,42 @@
+[
+  {
+    "id": "2335893",
+    "symbol": "005930",
+    "archive_date": "2024-02-29",
+    "published_at": "2024-02-29T11:43:00+09:00",
+    "modified_at": null,
+    "reason": "empty_body"
+  },
+  {
+    "id": "2371019",
+    "symbol": "035420",
+    "archive_date": "2024-06-18",
+    "published_at": "2024-06-18T14:19:00+09:00",
+    "modified_at": null,
+    "reason": "empty_body"
+  },
+  {
+    "id": "2371863",
+    "symbol": "035420",
+    "archive_date": "2024-06-20",
+    "published_at": "2024-06-20T10:55:00+09:00",
+    "modified_at": null,
+    "reason": "empty_body"
+  },
+  {
+    "id": "2376096",
+    "symbol": "035420",
+    "archive_date": "2024-07-02",
+    "published_at": "2024-07-02T17:58:00+09:00",
+    "modified_at": null,
+    "reason": "empty_body"
+  },
+  {
+    "id": "2431727",
+    "symbol": "005930",
+    "archive_date": "2024-12-23",
+    "published_at": "2024-12-23T13:38:00+09:00",
+    "modified_at": "2025-01-08T09:15:00+09:00",
+    "reason": "revision_after_development"
+  }
+]

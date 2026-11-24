@@ -10,10 +10,10 @@ from statistics import mean, median
 from src.execution import run_account
 from src.fetch_market import ROOT, SYMBOLS, write_csv, write_json
 from src.market_data import FEATURES, HORIZONS
+from src.news_schema import CONDITIONS, CONTRACT, NEWS, earnings_values
 
 YEARS = (2022, 2023, 2024)
 SEEDS = (11, 23, 37, 53, 71)
-NEWS = ("contract_signed", "contract_terminated", "contract_reports")
 PREPARED = ROOT / "data/local/prepared"
 RESULTS = ROOT / "data/local/server-runs"
 GAMMA = 0.95
@@ -39,13 +39,15 @@ def values(row, columns):
     return numbers
 
 
-def observable(row, price_only=False):
-    if price_only:
-        return values(row, FEATURES) is not None
-    return row["news_status"] == "complete" and values(row, (*FEATURES, *NEWS)) is not None
+def observable(row, price_only=False, complete_news_only=False):
+    # Later article revisions can identify gaps that traders could not see at this close.
+    if complete_news_only and row["news_status"] != "complete":
+        return False
+    columns = FEATURES if price_only else (*FEATURES, *NEWS)
+    return values(row, columns) is not None
 
 
-def read_panel(symbol, horizon):
+def read_panel(symbol, horizon, price_only=False):
     if symbol not in SYMBOLS or horizon not in HORIZONS:
         raise ValueError("Unknown stock or horizon")
     with (PREPARED / f"{symbol}.csv").open(encoding="utf-8-sig", newline="") as stream:
@@ -58,11 +60,11 @@ def read_panel(symbol, horizon):
     for i, row in enumerate(rows):
         if row["symbol"] != symbol or row["news_status"] not in ("complete", "unknown"):
             raise ValueError("Unexpected stock or news coverage code")
-        check_input(row, i, dates, horizon)
+        check_input(row, i, dates, horizon, price_only)
     return rows
 
 
-def check_input(row, i, dates, horizon):
+def check_input(row, i, dates, horizon, price_only=False):
     expected_next = dates[i+1] if i+1 < len(dates) else ""
     expected_end = dates[i+1+horizon] if i+1+horizon < len(dates) else ""
     if row["next_open_date"] != expected_next or row[f"label_end_date_{horizon}"] != expected_end:
@@ -70,13 +72,14 @@ def check_input(row, i, dates, horizon):
     target = row[f"target_up_{horizon}"]
     if target not in ("0", "1", "") or (target and not expected_end):
         raise ValueError("Unrealized or nonbinary target")
-    if row["news_status"] == "complete":
-        v = values(row, NEWS)
+    if not price_only or row["news_status"] == "complete":
+        earnings_values(row)
+        v = values(row, CONTRACT)
         if v is None or any(n < 0 or n != int(n) for n in v):
-            raise ValueError("Complete news coverage requires integer counts")
+            raise ValueError("Rebuild the panel with observed integer contract counts on every session")
 
 
-def panel_fold(rows, year, horizon, price_only=False):
+def panel_fold(rows, year, horizon, price_only=False, complete_news_only=False):
     if year not in YEARS:
         raise ValueError("Development validation years: 2022–2024")
     boundary = f"{year}-01-01"
@@ -85,10 +88,10 @@ def panel_fold(rows, year, horizon, price_only=False):
     valid = [r for r in rows if boundary <= r["date"] < future]
     if not past or not valid:
         raise ValueError("Both expanding history and validation sessions are required")
-    train = [r for r in past if observable(r, price_only) and r[f"target_up_{horizon}"] != ""
+    train = [r for r in past if observable(r, price_only, complete_news_only) and r[f"target_up_{horizon}"] != ""
              and r[f"label_end_date_{horizon}"] < boundary]
     # The prior year's last close can decide the first execution in the validation year.
-    decisions = [r for r in (past[-1:] + valid[:-1]) if observable(r, price_only)]
+    decisions = [r for r in (past[-1:] + valid[:-1]) if observable(r, price_only, complete_news_only)]
     return train, decisions
 
 
@@ -133,14 +136,14 @@ class Transition:
     steps: int
 
 
-def exploration(sessions, by_day, seed, price_only=False):
+def exploration(sessions, by_day, seed, price_only=False, complete_news_only=False):
     """One continuous historical account from cash. Collapse mandatory holds in gaps."""
     rng = random.Random(seed)
     choices = {}
     for bar in sessions[:-1]:
         decision = bar.previous_session
         row = by_day.get(decision)
-        if row is not None and observable(row, price_only):
+        if row is not None and observable(row, price_only, complete_news_only):
             choices[decision] = bool(rng.getrandbits(1))
     ledger = run_account(sessions, choices)
     before = [10_000_000.] + [float(e.booked_equity) for e in ledger[:-1]]
@@ -245,8 +248,8 @@ def replay_policy(directory, sessions, scores, policy, sensitivity):
     return summary
 
 
-def select_supervised(results, news_conditions=(False, True)):
-    """Pick within stock using both news conditions at each year's paired validation."""
+def select_supervised(results, news_conditions=tuple(CONDITIONS)):
+    """Pick within stock across matched news conditions and validation years."""
     scores = {}
     for name in ("logistic", "forest"):
         by_year = [mean(results[(name, y, n)]["book_return"] for n in news_conditions) for y in YEARS]
@@ -255,12 +258,17 @@ def select_supervised(results, news_conditions=(False, True)):
     return max(scores, key=scores.get)
 
 
-def run_stock(symbol, years, horizon, method, train_models, price_only, feature_set="all", sensitivity=False):
-    rows = read_panel(symbol, horizon)
+def run_stock(symbol, years, horizon, method, train_models, price_only, feature_set="all", sensitivity=False,
+              complete_news_only=False):
+    if price_only and complete_news_only:
+        raise ValueError("Choose a single coverage mode")
+    rows = read_panel(symbol, horizon, price_only)
     by_day = {date.fromisoformat(r["date"]): r for r in rows}
     results = {}
-    conditions = (False,) if price_only else (False, True)
-    mode = "price-only" if price_only else "paired"
+    conditions = ("market",) if price_only else tuple(CONDITIONS)
+    mode = "price-only" if price_only else "paired-observed"
+    if complete_news_only:
+        mode = "complete-news-only"
     out = RESULTS / mode / f"h{horizon}" / symbol
     if feature_set != "all":
         out = out / "features" / feature_set
@@ -271,30 +279,29 @@ def run_stock(symbol, years, horizon, method, train_models, price_only, feature_
         if [s.day for s in sessions] != list(by_day):
             raise ValueError("Account and prepared stock do not share a session calendar")
     for y in years:
-        train, decisions = panel_fold(rows, y, horizon, price_only)
+        train, decisions = panel_fold(rows, y, horizon, price_only, complete_news_only)
         coverage = "not used" if price_only else sum(
             bool(int(r["contract_signed"]) or int(r["contract_terminated"])) for r in train)
+        earnings = "not used" if price_only else sum(int(r["earnings_release"]) for r in train)
         print(f"{symbol} {y} {mode} inputs={feature_set} execution_bps={'0,5,10' if sensitivity else '5'} "
               f"training_labels={len(train)} eligible_validation_decisions={len(decisions)} "
-              f"training_days_with_contracts={coverage}")
+              f"training_days_with_contracts={coverage} training_days_with_earnings={earnings}")
         if not train_models:
             continue
         if not train or not decisions:
             raise ValueError(f"Insufficient {mode} inputs in {y}. Check coverage before fitting.")
         history = [s for s in sessions if s.day.year < y]
         validation = [s for s in sessions if s.day.year == y]
-        for n in conditions:
-            news_columns = NEWS if n else (None,) * len(NEWS)
-            columns = market_columns if price_only else (*market_columns, *news_columns)
-            tag = "with-news" if n else "market"
+        for tag in conditions:
+            columns = market_columns if price_only else (*market_columns, *CONDITIONS[tag])
             if method in ("both", "supervised"):
                 for name in ("logistic", "forest"):
                     probabilities = supervised(train, decisions, name, columns, horizon)
-                    results[(name, y, n)] = replay_policy(out / str(y) / tag / name, validation,
+                    results[(name, y, tag)] = replay_policy(out / str(y) / tag / name, validation,
                                                          lambda d, held: probabilities.get(d), threshold, sensitivity)
             if method in ("both", "fqi"):
                 for seed in SEEDS:
-                    transitions = exploration(history, by_day, seed, price_only)
+                    transitions = exploration(history, by_day, seed, price_only, complete_news_only)
                     qs = q_scores(history, by_day, transitions, decisions, columns, seed)
                     replay_policy(out / str(y) / tag / f"fqi-{seed}", validation,
                                   lambda d, held: qs.get((d, held)), greedy, sensitivity)
@@ -315,14 +322,17 @@ def main(argv=None):
                         help="input ablation; each variant uses the same eligible sessions")
     parser.add_argument("--slippage-sensitivity", action="store_true",
                         help="replay fixed fitted scores at 0/5/10 bp per fill; FQI training cost stays at 5 bp")
-    parser.add_argument("--price-only", action="store_true", help="independent comparison on all usable price days")
+    coverage = parser.add_mutually_exclusive_group()
+    coverage.add_argument("--price-only", action="store_true", help="independent comparison on all usable price days")
+    coverage.add_argument("--complete-news-only", action="store_true",
+                          help="retrospective sensitivity: restrict all three conditions to complete archive sessions")
     parser.add_argument("--train", action="store_true", help="opt in to fitting on the training server")
     args = parser.parse_args(argv)
     if args.train and args.horizon != 5 and args.method != "supervised":
         parser.error("Only supervised sensitivity checks use --horizon 1 or 10")
     for symbol in (args.symbol,) if args.symbol else SYMBOLS:
         run_stock(symbol, (args.year,) if args.year else YEARS, args.horizon, args.method, args.train, args.price_only,
-                  args.features, args.slippage_sensitivity)
+                  args.features, args.slippage_sensitivity, args.complete_news_only)
 
 
 if __name__ == "__main__":

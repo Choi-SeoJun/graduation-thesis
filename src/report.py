@@ -1,6 +1,7 @@
 """Build the development-only descriptive report. Matplotlib is needed only for the figure."""
 import csv
 import hashlib
+import json
 from datetime import date
 from decimal import Decimal
 from statistics import median
@@ -60,30 +61,45 @@ def main():
                   "![2019년 말 종가를 100으로 환산한 종목별 월말 가격](monthly-prices.png)", "",
                   "각 선은 2019년 말 종가를 100으로 둔 월말 가격이다. 배당·거래비용을 포함한 계좌 수익률은 별도로 계산한다.", "",
                   "## 연도별 시세 및 뉴스", "",
-                  "뉴스 완료는 정해 둔 단일 매체·검색 범위에서 해당 종목과 거래일의 집계가 가능하다는 뜻이다. 신규 사건은 같은 계약의 반복 보도를 합쳐 한 번만 센다.", "",
-                  "| 종목 | 연도 | 시세 거래일 | 뉴스 완료 | 뉴스 미확인 | 체결 사건 | 해지 사건 | 계약 보도 |",
-                  "|---|---:|---:|---:|---:|---:|---:|---:|"])
+                  "주 실험은 모든 개발 거래일에서 판단한다. 계약은 그 시각까지 확인할 수 있는 판본에서만 세고, 같은 계약의 반복 보도는 한 사건으로 묶는다. ‘자료 공백’은 현재 남은 기사에서 원래 시점의 내용을 완전히 복원할 수 없는 날이다. 이 표시는 사후 민감도 분석에서만 사용한다.", "",
+                  "| 종목 | 연도 | 시세 거래일 | 공백 미발견 | 자료 공백 | 체결 사건¹ | 해지 사건¹ | 계약 보도¹ | 분기 실적 주 실험 / 공백 제외 시 |",
+                  "|---|---:|---:|---:|---:|---:|---:|---:|---:|"])
     for s, rows in panels.items():
         for y in range(2020,2025):
             yr = [r for r in rows if r["date"].startswith(str(y))]
             complete = [r for r in yr if r["news_status"] == "complete"]
-            counts = [sum(int(r[k]) for r in complete) if complete else "—"
+            counts = [sum(int(r[k]) for r in yr)
                       for k in ("contract_signed","contract_terminated","contract_reports")]
+            earnings = sum(int(r['earnings_release']) for r in yr)
+            paired_earnings = sum(int(r['earnings_release']) for r in complete)
             lines.append(f"| {NAMES[s]} | {y} | {len(yr)} | {len(complete)} | {len(yr)-len(complete)} | " +
-                         " | ".join(map(str,counts)) + " |")
-    event_counts = {s: sum(int(r["contract_signed"]) for r in rows if r["news_status"] == "complete")
+                         " | ".join(map(str,counts)) + f" | {earnings} / {paired_earnings} |")
+    event_counts = {s: sum(int(r["contract_signed"]) for r in rows)
                     for s, rows in panels.items()}
-    terminations = sum(int(r["contract_terminated"]) for rows in panels.values() for r in rows if r["news_status"] == "complete")
-    lines.extend(["", f"확인된 입력에 포함한 신규 체결은 삼성전자 {event_counts['005930']}건, SK하이닉스 {event_counts['000660']}건, NAVER {event_counts['035420']}건이다. 해지 보도는 세 종목 합계 {terminations}건이다. NAVER는 학습·검증 구간별로 뉴스 변수가 거의 항상 0이어서 뉴스 효과를 결론 내리기 어렵다. 해지 변수도 관측 사건이 충분해야 방향이나 효과를 해석할 수 있다.",
-                  "", "일별 범위, 수정 기사 처리와 판단 보류 기준은 [자료·검증 방법](data-notes.md)에 기록했다.", "",
+    terminations = sum(int(r["contract_terminated"]) for rows in panels.values() for r in rows)
+    archive = json.loads((ROOT / 'research/contract_audit.json').read_text(encoding='utf-8'))
+    counts = archive['counts']
+    raw = archive['unique_counts_before_close_alignment']
+    lines.extend(["", f"¹ 주 실험 표본에서 첫 사용일에 집계된 체결은 삼성전자 {event_counts['005930']}건, SK하이닉스 {event_counts['000660']}건, NAVER {event_counts['035420']}건이고 해지는 세 종목 합계 {terminations}건이다. 발행 후 바뀐 본문은 확인한 수정 시각 이후에 사용한다. 희소한 사건의 효과는 종목별 독립 관측 수와 실제 주문 변화를 함께 보고 해석한다.",
+                  "", f"회사명이 제목에 등장하는 이투데이 기사 {counts['articles']:,}건 중 {counts['nonempty_bodies']:,}건의 보존 본문에 계약 표현 검색을 적용하고 후보 문맥과 당사자 근거를 점검했다. 같은 기사가 여러 종목을 언급할 수 있다. 전체 사건 원장과 발표일 자료는 아래와 같다. [판정 방법과 사례](../research/contract_method.md)", "",
+                  "| 종목 | 본문에서 확인한 고유 체결 | 고유 해지 | 분기 실적 발표 | 최초 기사에서 전년 동기 증감률 확인 |",
+                  "|---|---:|---:|---:|---:|"])
+    for symbol, rows in panels.items():
+        lines.append(f"| {NAMES[symbol]} | {raw[symbol]['signed']} | {raw[symbol]['terminated']} | "
+                     f"{sum(int(r['earnings_release']) for r in rows)} | {sum(int(r['earnings_yoy_available']) for r in rows)} |")
+    total = sum(len(rows) for rows in panels.values())
+    eligible = [r for rows in panels.values() for r in rows if r['news_status'] == 'complete']
+    releases_used = sum(int(r['earnings_release']) for r in eligible)
+    lines.extend(["", f"주 실험은 모든 입력 조건에서 동일한 {total:,}개 종목·거래일에 판단 기회를 두며 분기 실적 60회를 모두 보존한다. 뉴스 0은 그때까지 보존 판본에서 확인한 사건이 0건이라는 뜻이다. 실제 언론이 보도한 전체 사건 수는 알 수 없다. 사후에 발견한 자료 공백을 제외하는 별도 비교에서는 {len(eligible):,}개 종목·거래일과 분기 실적 {releases_used}회가 남는다. 나중에 발견한 공백으로 과거 주문이 사라지는 문제를 주 실험에서 피했다.", "",
+                  "본문 누락·수정 시각과 공통 표본의 기준은 [자료와 검증 방법](data-notes.md)에 기록했다. [계약 판정표](../research/contract_events.json) · [실적 원장 검증](earnings.md) · [빅카인즈 대조](bigkinds-audit.md)", "",
                   "## 학습 자료의 시간 경계", "",
-                  "| 검증 연도 | 학습 연도 | 뉴스 제약 없는 가격 표본(종목당, 1일 / 5일 / 10일 목표) | 뉴스 조건과 짝지은 5일 표본(삼성전자 / SK하이닉스 / NAVER) |",
+                  "| 검증 연도 | 학습 연도 | 주 실험 가격·뉴스 공통 표본(종목당, 1일 / 5일 / 10일 목표) | 사후 공백 제외 시 5일 표본(삼성전자 / SK하이닉스 / NAVER) |",
                   "|---:|---|---|---|"])
     folds = read(PREPARED/"folds.csv")
     for y in range(2022,2025):
         group = [r for r in folds if int(r["validation_year"]) == y]
         price = [r["train_price"] for r in group if r["symbol"] == SYMBOLS[0]]
-        paired = [r["train_paired"] for r in group if r["horizon"] == "5"]
+        paired = [r["train_complete_news_only"] for r in group if r["horizon"] == "5"]
         lines.append(f"| {y} | 2020~{y-1} | {' / '.join(price)} | {' / '.join(paired)} |")
     lines.extend(["","각 연도의 첫 검증 주문은 직전 거래일 마감에 산출 가능한 신호를 쓴다. 학습 목표가 검증 기간의 시가를 참조하는 행은 학습에서 제외한다.", "",
                   "## 삼성전자 거래원장 예시", "",
@@ -97,8 +113,8 @@ def main():
                      f"{Decimal(r['fee'])+Decimal(r['sell_tax']):,.2f}원 | {Decimal(r['booked_equity']):,.2f}원 |")
     lines.extend(["","슬리피지는 시가 대비 편도 0.05%를 체결가에 반영했다. 매도는 마지막 날 청산 규칙과도 일치한다. 이 예시는 매매 규칙의 수익 예측력을 평가하는 데 사용하지 않는다.", "",
                   "## 단순 전략 재생", "",
-                  "1,000만 원을 종목·연도·전략별로 새로 배정했다. 전액 현금, 첫 시가 매수 후 보유, 20일 이동평균, 뉴스가 확인된 날만 판단하는 20일 이동평균을 같은 계좌에서 재생했다. 아래는 3개 검증 연도의 거래비용 차감 후 장부수익률이다. 각 연도의 마지막 거래일 시가에 보유분을 청산한다.", "",
-                  "| 종목 | 연도 | 현금 | 매수 후 보유 | 이동평균 | 뉴스 확인일 이동평균 | 연말 미확정 배당 권리가 있는 전략 |",
+                  "1,000만 원을 종목·연도·전략별로 새로 배정했다. 전액 현금, 첫 시가 매수 후 보유, 20일 이동평균, 사후에 자료 공백이 없다고 확인한 날만 판단하는 보조 이동평균을 같은 계좌에서 재생했다. 아래는 3개 검증 연도의 거래비용 차감 후 장부수익률이다. 각 연도의 마지막 거래일 시가에 보유분을 청산한다.", "",
+                  "| 종목 | 연도 | 현금 | 매수 후 보유 | 이동평균 | 자료 공백 제외 이동평균(사후) | 연말 미확정 배당 권리가 있는 전략 |",
                   "|---|---:|---:|---:|---:|---:|---|"])
     baselines = read(OUTPUT/"annual.csv")
     for s in SYMBOLS:
@@ -113,7 +129,8 @@ def main():
     inputs = [PREPARED/f"{s}.csv" for s in SYMBOLS]
     inputs += [PREPARED/"folds.csv", MARKET/"raw/KOSPI.csv",
                ROOT/"data/local/news/etoday/development/news_daily.csv",
-               ROOT/"research/dividends.psv", ROOT/"research/etoday_events.json"]
+               ROOT/"research/dividends.psv", ROOT/"research/etoday_events.json", ROOT/"research/earnings.json",
+               ROOT/"research/contract_events.json", ROOT/"research/contract_gaps.json", ROOT/"research/contract_audit.json"]
     inputs += [MARKET/"exchange"/f"{s}.csv" for s in SYMBOLS]
     write_json(docs/"input-fingerprints.json",
                {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs})

@@ -1,0 +1,53 @@
+{
+  "first": "2020-01-01",
+  "last": "2024-12-31",
+  "counts": {
+    "articles": 8842,
+    "nonempty_bodies": 8837,
+    "stock_article_pairs": 9096,
+    "body_keyword_pairs": 1188,
+    "body_keyword_pairs_outside_previous_titles": 977,
+    "reviews_with_named_case_notes": 397,
+    "screen_negatives_without_case_notes": 893,
+    "no_cue_retained_only_for_revision": 1258
+  },
+  "xml_crosscheck": {
+    "xml_only_ids": 763,
+    "additional_company_titles": []
+  },
+  "adjudication": {
+    "decision_sources_sha256": {
+      "etoday_events.json": "5b50a851ba5a1f722ae31c053990f54d985ee83f8e8fa7d807276639bbbaeacc",
+      "contract_manual.psv": "770285bb3f5bc6b55050b74a2af41adadbd64ab5079993d3fd344be07898a019",
+      "contract_manual_samsung_early.psv": "e28196ab80667a9544e12be71f57c69dabb915f1ceba9c7e7c2dd7c99f0f8f80",
+      "contract_manual_samsung_late.psv": "a95802ce523bf42e363f62aee1e012940d969699eb571debeb2010df0f99c38c"
+    },
+    "screen_sha256": "abc292743da1bbc32dc34903e3efd9453cf74c0ceeab32d69888ac21d7d504ef",
+    "body_candidate_pairs_sha256": "86c9b21f694cd6eb612a5de917a1c830c4978c7e58cb7e085998c1316d3e549f",
+    "classified_pairs_sha256": "126b6458ee033532376e1d0fc4eee74c00a53d1a552540910d3e8ac966bae416",
+    "decisions_sha256": "65348da511cb72aafe0d23776ab552da96f79672372810afe06718787e52a6a1",
+    "gaps_sha256": "9f2c900a56dfb0841c2982c7f8f6c87fe5fa8bd708225a5376ca7417a9726657"
+  },
+  "articles_unusable": 5,
+  "corpus_sha256": "75171947351648238b722c884d4ec57a3e31a950d750815ce61b4de5f7feee69",
+  "unique_counts_before_close_alignment": {
+    "005930": {
+      "signed": 79,
+      "terminated": 0,
+      "reports": 73,
+      "included_articles": 81
+    },
+    "000660": {
+      "signed": 28,
+      "terminated": 0,
+      "reports": 28,
+      "included_articles": 28
+    },
+    "035420": {
+      "signed": 10,
+      "terminated": 0,
+      "reports": 10,
+      "included_articles": 11
+    }
+  }
+}

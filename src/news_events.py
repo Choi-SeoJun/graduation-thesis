@@ -1,4 +1,4 @@
-"""Align reviewed EToday corporate-contract stories to three stocks' market closes."""
+"""Align reviewed EToday contracts and quarterly earnings to each stock's decision time."""
 import csv
 import json
 import re
@@ -8,10 +8,11 @@ from datetime import date, datetime, time, timedelta
 
 from src.fetch_market import KST, MARKET, ROOT, SYMBOLS, write_csv, write_json
 from src.news_archive import ROOT as NEWS_ROOT
+from src.news_schema import CONTRACT, earnings_values
 
 LATE_CLOSE = {date.fromisoformat(d) for d in
               ("2020-12-03", "2021-11-18", "2022-11-17", "2023-11-16", "2024-11-14")}
-NEWS_COLUMNS = ("contract_signed", "contract_terminated", "contract_reports")
+NEWS_COLUMNS = CONTRACT
 
 
 def eligible_headline(title):
@@ -35,7 +36,7 @@ def signal_day(stamp, sessions):
 
 
 def build_daily(sessions, reviews, unresolved, complete_calendar_day):
-    """Emit counts only after calendar coverage, timestamp and coding checks."""
+    """Count confirmed editions at their available close; flag archival uncertainty separately."""
     gaps = {(s,d) for s, dates in unresolved.items() for d in dates}
     new_events, reports = {}, {}
     for r in reviews:
@@ -69,7 +70,9 @@ def build_daily(sessions, reviews, unresolved, complete_calendar_day):
                        for n in range((session - previous).days + 1))
         for symbol in SYMBOLS:
             available = complete and (symbol,session) not in gaps
-            fields = counts[(symbol,session)] if available else dict.fromkeys(NEWS_COLUMNS)
+            # A later edit can reveal archive uncertainty, never revoke an earlier decision.
+            # Zero here means no confirmed signal in the preserved editions up to this close.
+            fields = counts[(symbol,session)]
             rows.append({"date": session.isoformat(), "symbol": symbol,
                          "news_status": "complete" if available else "unknown", **fields})
     return rows
@@ -82,53 +85,44 @@ def read_json(path):
 def main():
     out = NEWS_ROOT / "development"
     coverage = read_json(out / "coverage.json")
-    observed = read_json(out / "candidates.json")
-    reviewed = read_json(ROOT / "research/etoday_events.json")
+    reviewed = read_json(ROOT / "research/contract_events.json")
+    unresolved = read_json(ROOT / "research/contract_gaps.json")
+    earnings = read_json(ROOT / "research/earnings.json")
     with (MARKET / "raw/KOSPI.csv").open(encoding="utf-8") as src:
         sessions = sorted(date.fromisoformat(r["date"]) for r in csv.DictReader(src))
-    lookup = {(r["id"],r["symbol"]):r for r in reviewed}
-    if len(lookup) != len(reviewed):
-        raise ValueError("Duplicate article-stock adjudication")
+    if len({(r["id"], r["symbol"]) for r in reviewed}) != len(reviewed):
+        raise ValueError("Duplicate contract article-stock decision")
     gaps = defaultdict(set)
-    used, missing = [], []
-    narrow_ids = {a["id"] for a in observed if eligible_headline(a["title"])}
-    for article in observed:
-        for symbol in article["instruments"]:
-            key = (article["id"], symbol)
-            r = lookup.get(key)
-            exact = article.get("published_at")
-            modified = article.get("modified_at")
-            if r and exact and r["published_at"] == exact and r["modified_at"] == modified:
-                used.append(r)
-                continue
-            # Article without first-edition clock can affect the same or next session.
-            # Re-running with added candidates does not turn their dates into zero.
-            stamp = exact or article["archive_date"]
-            lower = stamp[:10] + "T00:00:00+09:00"
-            for t in ((stamp,) if exact else (lower, stamp)):
-                d = signal_day(t, sessions)
-                if d:
-                    gaps[symbol].add(d)
-            if modified:
-                later = signal_day(modified, sessions)
-                if later:
-                    gaps[symbol].add(later)
-            missing.append({"id": article["id"], "symbol": symbol})
+    for article in unresolved:
+        first = article.get("published_at")
+        day = first[:10] if first else article["archive_date"]
+        stamps = [first] if first else [day + "T00:00:00+09:00", day]
+        if article.get("modified_at"):
+            stamps.append(article["modified_at"])
+        for stamp in stamps:
+            observed = signal_day(stamp, sessions)
+            if observed:
+                gaps[article["symbol"]].add(observed)
+
     def complete(d):
         month = coverage["months"].get(d.isoformat()[:7])
         return month is not None and month["reconciled"]
-    rows = build_daily(sessions, used, gaps, complete)
+
+    rows = build_daily(sessions, reviewed, gaps, complete)
+    from src.earnings import build_daily as build_earnings
+    eps = {(r["symbol"], r["date"]): r for r in build_earnings(sessions, earnings)}
+    if set(eps) != {(r["symbol"], r["date"]) for r in rows}:
+        raise ValueError("Quarterly earnings and contracts use different development sessions")
+    for row in rows:
+        row.update(earnings_values(eps[row["symbol"], row["date"]]))
     write_csv(out / "news_daily.csv", list(rows[0]), rows)
     write_json(out / "coding_audit.json", {
-        "candidate_articles": len(observed), "input_article_stock_pairs": sum(len(a["instruments"]) for a in observed),
-        "narrow_title_articles": len(narrow_ids),
-        "eligible_pairs_outside_narrow_titles": sum(r["event_type"] != "exclude" and r["id"] not in narrow_ids for r in used),
-        "reviewed_pairs_used": len(used), "unusable_or_unreviewed_pairs": missing,
-        "eligible_pairs": sum(r["event_type"] != "exclude" for r in used),
-        "complete_signal_rows": sum(r["news_status"]=="complete" for r in rows),
-        "unknown_signal_rows": sum(r["news_status"]=="unknown" for r in rows)})
-    print(len(rows), "stock-sessions;", len(used), "reviewed article-stock pairs;",
-          len(missing), "unusable or unreviewed")
+        "reviewed_article_stock_pairs": len(reviewed),
+        "unusable_or_unreviewed_pairs": unresolved,
+        "complete_signal_rows": sum(r["news_status"] == "complete" for r in rows),
+        "unknown_signal_rows": sum(r["news_status"] == "unknown" for r in rows),
+        "earnings_releases": sum(r["earnings_release"] for r in rows)})
+    print(len(rows), "stock-sessions;", len(earnings), "earnings records;", len(unresolved), "contract gaps")
 
 
 if __name__ == "__main__":
