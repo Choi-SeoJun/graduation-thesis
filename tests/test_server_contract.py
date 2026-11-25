@@ -163,10 +163,18 @@ class ServerContractTest(unittest.TestCase):
                     with self.subTest(flags=flags), redirect_stdout(io.StringIO()) as out:
                         srv.main(base_args + flags)
                         self.assertIn(mode, out.getvalue())
+                        self.assertIn("method=supervised ", out.getvalue())
                         self.assertIn(f"training_labels={count} ", out.getvalue())
                 with self.assertRaises(SystemExit) as error, redirect_stderr(io.StringIO()):
                     srv.main(base_args + ["--complete-news-only", "--price-only"])
                 self.assertEqual(error.exception.code, 2)
+
+    def test_training_entry_defaults_to_supervised_and_accepts_optional_methods(self):
+        for options, expected in (([], "supervised"), (["--method", "fqi"], "fqi"),
+                                  (["--method", "both"], "both")):
+            with self.subTest(options=options), patch.object(srv, "run_stock") as run:
+                srv.main(["--symbol", "005930", "--year", "2022", "--train", *options])
+                run.assert_called_once_with("005930", (2022,), 5, expected, True, False, "all", False, False)
 
     def test_forward_columns_and_news_validation(self):
         rows = sample_rows()

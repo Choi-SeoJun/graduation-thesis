@@ -286,7 +286,7 @@ def run_stock(symbol, years, horizon, method, train_models, price_only, feature_
         def event_days(columns):
             return "not used" if price_only else sum(any(int(r[c]) for c in columns[:2]) for r in train)
         earnings = "not used" if price_only else sum(int(r["earnings_release"]) for r in train)
-        print(f"{symbol} {y} {mode} inputs={feature_set} execution_bps={'0,5,10' if sensitivity else '5'} "
+        print(f"{symbol} {y} {mode} method={method} inputs={feature_set} execution_bps={'0,5,10' if sensitivity else '5'} "
               f"training_labels={len(train)} eligible_validation_decisions={len(decisions)} "
               f"training_etoday_contract_days={event_days(CONTRACT)} training_union_contract_days={event_days(UNION_CONTRACT)} "
               f"training_days_with_earnings={earnings} conditions={','.join(conditions)}")
@@ -337,7 +337,8 @@ def main(argv=None):
     parser.add_argument("--symbol", choices=SYMBOLS, help="default: all three, fitted separately")
     parser.add_argument("--year", type=int, choices=YEARS, help="default: all expanding development folds")
     parser.add_argument("--horizon", type=int, choices=HORIZONS, default=5, help="supervised horizon only")
-    parser.add_argument("--method", choices=("supervised", "fqi", "both"), default="both")
+    parser.add_argument("--method", choices=("supervised", "fqi", "both"), default="supervised",
+                        help="supervised is the default; choose fqi or both for the optional reinforcement-learning experiment")
     parser.add_argument("--features", choices=FEATURE_SETS, default="all",
                         help="input ablation; each variant uses the same eligible sessions")
     parser.add_argument("--slippage-sensitivity", action="store_true",
