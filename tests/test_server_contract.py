@@ -104,6 +104,12 @@ class ServerContractTest(unittest.TestCase):
             self.assertEqual(q_estimates.call_count, 5 * len(srv.SEEDS))
             self.assertEqual(exploration.call_count, len(srv.SEEDS))
             result = Path(tmp) / "paired-observed/h5/005930/2022/source-comparison"
+            for tag in srv.CONDITIONS:
+                for model in ("logistic", "forest"):
+                    report = result.parent / tag / model / "forecast-diagnostics.json"
+                    self.assertTrue(report.is_file())
+                    diagnostics = json.loads(report.read_text())
+                    self.assertEqual((diagnostics["horizon"], diagnostics["n"]), (5, 14))
             with (result / "supervised.csv").open(newline="") as f:
                 supervised = list(csv.DictReader(f))
             with (result / "fqi.csv").open(newline="") as f:
@@ -123,6 +129,31 @@ class ServerContractTest(unittest.TestCase):
             self.assertEqual((daily[0]["decision_close"], daily[0]["execution_open"]), ("2021-12-31", "2022-01-03"))
             self.assertEqual((daily[0]["etoday_decision"], daily[0]["union_decision"]), ("hold", "buy"))
             self.assertEqual((daily[-1]["union_decision"], daily[-1]["union_order"]), ("", "sell"))
+
+    def test_forecast_metrics_use_only_targets_realized_in_validation(self):
+        train = [{"target_up_5": v} for v in ("1", "1", "1", "0")]
+        examples = [
+            ("2021-12-31", "2022-01-03", "2022-01-10", "1", .5),
+            ("2022-01-03", "2022-01-04", "2022-01-11", "0", .8),
+            ("2022-01-04", "2022-01-05", "2022-01-12", "0", .2),
+            ("2022-01-05", "2022-01-06", "2022-01-13", "", .9),
+            ("2021-12-30", "2021-12-31", "2022-01-07", "0", .9),
+            ("2022-12-28", "2022-12-29", "2023-01-05", "1", .9),
+            ("2022-12-29", "2022-12-30", "", "", .9),
+        ]
+        decisions = [dict(date=d, next_open_date=start, label_end_date_5=end, target_up_5=y)
+                     for d, start, end, y, _ in examples]
+        probabilities = {date.fromisoformat(d): p for d, _, _, _, p in examples}
+        report = srv.forecast_diagnostics(train, decisions, probabilities, 2022, 5)
+        self.assertEqual((report["n"], report["horizon"], report["training_up_rate"]), (3, 5, .75))
+        for metric, expected in (("up_rate", 1/3), ("majority_accuracy", 1/3), ("accuracy", 2/3),
+                                 ("brier", .31), ("prevalence_brier", 19/48), ("balanced_accuracy", .75)):
+            self.assertAlmostEqual(report[metric], expected)
+        one = srv.forecast_diagnostics(train, decisions[:1], probabilities, 2022, 5)
+        self.assertIsNone(one["balanced_accuracy"])
+        empty = srv.forecast_diagnostics(train, decisions[3:], probabilities, 2022, 5)
+        self.assertEqual(empty["n"], 0)
+        self.assertIsNone(empty["brier"])
 
     def test_future_revision_flag_does_not_block_primary_training_or_decisions(self):
         rows = sample_rows()

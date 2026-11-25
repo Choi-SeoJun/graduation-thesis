@@ -118,6 +118,32 @@ def supervised(train, decisions, name, columns, horizon):
     return {date.fromisoformat(r["date"]): float(p) for r, p in zip(decisions, probabilities)}
 
 
+def forecast_diagnostics(train, decisions, probabilities, year, horizon):
+    """Score fixed forecasts whose entry and realized target both fall in this fold."""
+    target = f"target_up_{horizon}"
+    label_end = f"label_end_date_{horizon}"
+    training_up_rate = mean(int(r[target]) for r in train)
+    start, stop = f"{year}-01-01", f"{year+1}-01-01"
+    observed = [(int(r[target]), probabilities[date.fromisoformat(r["date"])]) for r in decisions
+                if r[target] != "" and start <= r["next_open_date"] <= r[label_end] < stop]
+    result = dict(horizon=horizon, n=len(observed), training_up_rate=training_up_rate,
+                  up_rate=None, majority_accuracy=None, accuracy=None, balanced_accuracy=None,
+                  brier=None, prevalence_brier=None)
+    if observed:
+        result.update(
+            up_rate=mean(y for y, _ in observed),
+            majority_accuracy=mean((training_up_rate >= .5) == y for y, _ in observed),
+            accuracy=mean((p >= .5) == y for y, p in observed),
+            brier=mean((p - y) ** 2 for y, p in observed),
+            prevalence_brier=mean((training_up_rate - y) ** 2 for y, _ in observed),
+        )
+        if 0 < result["up_rate"] < 1:
+            sensitivity = mean(p >= .5 for y, p in observed if y == 1)
+            specificity = mean(p < .5 for y, p in observed if y == 0)
+            result["balanced_accuracy"] = (sensitivity + specificity) / 2
+    return result
+
+
 def threshold(probability, holding):
     if probability is None:
         return None
@@ -303,7 +329,10 @@ def run_stock(symbol, years, horizon, method, train_models, price_only, feature_
             for name in ("logistic", "forest"):
                 for tag, columns in variants.items():
                     probabilities = supervised(train, decisions, name, columns, horizon)
-                    results[(name, y, tag)] = replay_policy(year_dir / tag / name, validation,
+                    model_dir = year_dir / tag / name
+                    write_json(model_dir / "forecast-diagnostics.json",
+                               forecast_diagnostics(train, decisions, probabilities, y, horizon))
+                    results[(name, y, tag)] = replay_policy(model_dir, validation,
                                                             lambda d, held: probabilities.get(d), threshold, sensitivity)
                 if not price_only:
                     comparisons.extend(compare_runs(year_dir, symbol, y, name, 11, by_day, sensitivity))

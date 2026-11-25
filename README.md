@@ -1,8 +1,8 @@
 # 국내 주식 매수·매도 타이밍 연구
 
-**연구 질문**　과거 가격·거래량·시장 흐름으로 추정한 5거래일 상승 가능성을 매매에 사용할 때, 기업 계약 보도를 더 빨리 또는 더 많이 확보하면 세 종목의 매수일·매도일과 거래비용 차감 후 성과가 어떻게 달라지는가? 지도학습을 주 분석으로 삼고, 시간이 남으면 강화학습을 추가한다.
+**연구 질문**　어제까지의 정보로 오늘 시가에 사고파는 시스템이 세 종목 각각에서 단순 전략보다 비용 차감 후 성과가 좋은가? 기업 계약 보도를 더 빨리 또는 더 많이 확보하면 매수·매도일과 수익·낙폭이 얼마나 달라지는가? 로지스틱 회귀를 주 모델로 고정하고 랜덤포레스트로 같은 비교를 반복한다.
 
-[연구 설계 전체 읽기](./졸업논문%20연구설계.md) · [종목 선정표와 근거](./졸업논문%20연구설계.md#연구-대상-종목) · [선행연구 6편 비교](./선행연구%20검토.md) · [설계 변경 기록](https://github.com/Choi-SeoJun/graduation-thesis/commits/main/)
+[연구 설계와 기준을 정한 근거](./졸업논문%20연구설계.md) · [종목 선정 근거](./졸업논문%20연구설계.md#연구-대상-종목) · [선행연구 14편의 방법과 한계](./선행연구%20검토.md) · [설계 변경 기록](https://github.com/Choi-SeoJun/graduation-thesis/commits/main/)
 
 ## 무엇을 비교하나
 
@@ -30,6 +30,8 @@
 ## 현재 결과
 
 각 종목의 2020~2024년 거래일 **1,231일**에 시장 입력과 출처별 계약 사건, 이투데이 분기 발표 20건을 연결했다. 각 사건의 첫 가용 시각과 종가 판단일을 추적할 수 있다. 아래 자료는 학습 전 입력 점검 결과다. [종목·연도별 집계](docs/pretraining.md) · [사건별 근거](research/contract_source_events.psv) · [계약 뉴스 일별 입력](research/contract_source_daily.csv) · [분기 실적·자료 공백 일별 입력](research/etoday_daily_context.csv)
+
+쌍바닥·쌍봉 규칙은 개발 종가에서 같은 종류의 연속 극점 978쌍, 간격 충족 10쌍, 가격과 목선 조건 충족 2쌍, 최종 돌파 0일이었다. 이 도형을 매매 신호로 쓰기에는 관측 사례가 없어 본실험에서 제외했다. 재현 명령은 개발 시세 복원 후 `python -m research.chart_pattern_screen`이다. [연도별 결과](research/chart_pattern_counts.psv) · [종목별 단계 집계](research/chart_pattern_funnel.psv)
 
 ## 서버에서 시작하기
 
@@ -67,6 +69,8 @@ python -m src.server_train --train
 ```
 
 기본 결과는 `data/local/server-runs/contract-sources-v1/paired-observed/h5/<종목코드>/<검증연도>/source-comparison/`에 저장된다. `supervised.csv`에 지도학습 후보별 결과가 담긴다. 선택 실험인 강화학습을 실행하면 `fqi.csv`에는 시드별 결과, `fqi-seeds.csv`에는 같은 시드 쌍에서 구한 차이의 중앙값과 범위가 저장된다. **주 비교는 `contrast=with-earnings`를 읽는다.** `net_return_delta_pp`가 양수이면 다매체 조건의 비용 차감 후 수익률이 높았고, `drawdown_delta_pp`가 양수이면 다매체 계좌의 최대낙폭이 더 컸다. `with-earnings/<모델>/daily.csv`에서 판단일과 체결일, 목표 보유 상태, 주문 방향·수량을 확인할 수 있다. 연말 강제청산은 별도 표시한다.
+
+각 검증연도의 `<입력 조건>/<모델>/forecast-diagnostics.json`에서 예측일 수, 정확도·균형정확도와 Brier 점수를 확인한다. 정확도는 훈련 다수 클래스, Brier는 훈련 상승 비율을 사용한 단순 예측과 비교한다. 종목별 `selected.json`은 세 개발 검증연도의 운용 후보 선정 결과다. 논문의 주 분석은 세 종목 모두 사전 지정한 로지스틱 회귀 결과를 보고한다.
 
 종목·연도 일부를 검증하려면 `--symbol 005930 --year 2022`를 추가한다. `--method supervised --horizon 1` 또는 `--horizon 10`은 지도학습의 목표 기간을 바꾸는 보조 실험이다. `--features`는 시장 변수 묶음, `--complete-news-only`는 이투데이 자료 공백일을 제외한 사후 비교, `--slippage-sensitivity`는 같은 점수에 편도 슬리피지 0·5·10bp를 적용한다. `--price-only`는 시장 입력으로만 실행한다. [변수 정의와 표본](docs/data-notes.md)
 
